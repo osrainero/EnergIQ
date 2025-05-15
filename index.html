@@ -3,13 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gráficos con D3.js</title>
+    <title>EnergIQ</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .tooltip {
+            position: absolute;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 4px;
+            pointer-events: none;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .interval-controls {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .interval-controls button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .interval-controls button:hover {
+            background-color: #45a049;
+        }
+        
+        .interval-controls span {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .axis-label {
+            font-size: 12px;
+            fill: #333;
+        }
+        
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+        
+        .dot {
+            fill: steelblue;
+            stroke: #fff;
+        }
+    </style>
 </head>
 <body>
-    <h1>Visualización de Datos con D3.js</h1>
-    <div id="chart"></div>
+    <h1>Valores de la Columna 30.0 por Hora</h1>
+    <div id="chart-container">
+        <div id="chart"></div>
+    </div>
+    <div id="tooltip" class="tooltip"></div>
     <script src="script.js"></script>
 </body>
 </html>
