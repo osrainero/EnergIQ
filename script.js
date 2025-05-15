@@ -11,6 +11,37 @@ const chartConfigs = {
     // chart2 se añadirá en la siguiente etapa
 };
 
+// Función para calcular densidad de etiquetas del eje X
+function calculateTickDensity(intervalIndex, dataLength) {
+    // Ajuste dinámico basado en intervalo y cantidad de datos
+    const intervalSize = [
+        5,   // original (valor mínimo)
+        5,   // 5s
+        10,  // 15s
+        15,  // 30s
+        20,  // 1m
+        30,  // 5m
+        40,  // 15m
+        50,  // 30m
+        60   // 1h
+    ][intervalIndex];
+    
+    // Asegurar que no mostremos más de 20 etiquetas ni menos de 5
+    const maxLabels = 30;
+    const minLabels = 10;
+    
+    // Calcular densidad basada en el tamaño del intervalo y cantidad de datos
+    let density = Math.max(
+        minLabels,
+        Math.min(
+            maxLabels,
+            Math.floor(dataLength / intervalSize)
+        )
+    );
+    
+    // Asegurar que al menos mostremos 1 de cada N puntos
+    return Math.max(1, Math.floor(dataLength / density));
+}
 // Función principal
 function initializeChart(config) {
     d3.csv("data.csv").then(function(rawData) {
@@ -228,9 +259,16 @@ function initializeChart(config) {
                 .duration(750)
                 .ease(d3.easeCubicInOut);
 
-            // Actualizar ejes
+            // Calcular qué etiquetas mostrar
+            //const showEveryN = calculateTickDensity(currentIntervalIndex);
+            //const tickValues = x.domain().filter((d, i) => !(i % showEveryN));
+            const showEveryN = calculateTickDensity(currentIntervalIndex, groupedData.length);
+            const tickValues = x.domain().filter((d, i) => !(i % showEveryN));
+
+
+            // Actualizar ejes con las etiquetas filtradas
             xAxis.transition(t)
-                .call(d3.axisBottom(x))
+                .call(d3.axisBottom(x).tickValues(tickValues))
                 .selectAll("text")
                 .style("text-anchor", "end")
                 .attr("dx", "-.8em")
