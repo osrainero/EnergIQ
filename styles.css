@@ -1,95 +1,136 @@
 /* Estilos generales */
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    text-align: center;
-    background-color: #f5f5f5;
-}
-
-h1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
     color: #333;
-    margin-bottom: 30px;
+    line-height: 1.6;
 }
 
-/* Contenedor del gráfico y controles */
-#chart-container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
+.main-header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-#chart {
-    width: 100%;
-    height: 600px;
+.main-header h1 {
+    margin: 0;
+    font-size: 2.2rem;
+}
+
+.dashboard {
+    max-width: 1300px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    display: grid;
+    gap: 2rem;
+}
+
+/* Contenedores de gráficos */
+.chart-container {
     background: white;
-    border: 1px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 1.5rem;
+}
+
+.chart-header {
+    margin-bottom: 1.5rem;
+}
+
+.chart-header h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+}
+
+.chart-description {
+    color: #666;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+/* Gráficos */
+.chart {
+    width: 100%;
+    height: 500px;
+    margin-bottom: 15px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
     overflow: hidden;
 }
 
 /* Controles de intervalo */
 .interval-controls {
-    text-align: center;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 1rem 0;
 }
 
 .interval-controls button {
-    padding: 6px 12px;
-    margin: 0 5px;
-    background-color: #4e79a7;
+    padding: 0.4rem 0.8rem;
+    background-color: #3498db;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 0.9rem;
     transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
 }
 
 .interval-controls button:hover {
-    background-color: #3a5f8a;
+    background-color: #2980b9;
 }
 
 .interval-controls button:disabled {
-    background-color: #cccccc;
+    background-color: #bdc3c7;
     cursor: not-allowed;
 }
 
 .interval-controls span {
-    font-weight: bold;
-    font-size: 14px;
-    color: #333;
-    margin: 0 10px;
-    display: inline-block;
-    min-width: 200px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    min-width: 180px;
+    text-align: center;
 }
 
 /* Tooltip */
 .tooltip {
     position: absolute;
-    padding: 8px 12px;
+    padding: 10px;
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid #ddd;
     border-radius: 4px;
     pointer-events: none;
     font-size: 13px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     opacity: 0;
     transition: opacity 0.2s;
+    z-index: 10;
+    max-width: 250px;
 }
 
 .tooltip strong {
-    color: #333;
+    color: #2c3e50;
 }
 
 /* Elementos del gráfico */
 .axis-label {
-    font-size: 13px;
+    font-size: 12px;
     fill: #666;
 }
 
@@ -106,21 +147,51 @@ h1 {
     stroke: #ccc;
 }
 
-circle {
-    fill: #4e79a7;
+.dot {
+    fill: #3498db;
     stroke: white;
     stroke-width: 1px;
-    transition: r 0.2s, fill 0.2s;
+    transition: all 0.2s;
 }
 
-circle:hover {
-    fill: #ff7f0e;
-    r: 6;
+.dot:hover {
+    fill: #e74c3c;
+    stroke-width: 2px;
 }
 
-path.line {
+.line {
     fill: none;
-    stroke: #4e79a7;
+    stroke: #3498db;
     stroke-width: 2px;
     stroke-linejoin: round;
+}
+
+/* Mensajes de error */
+.error-message {
+    color: #c0392b;
+    padding: 1rem;
+    background: #fdecea;
+    border: 1px solid #f5b7b1;
+    border-radius: 4px;
+    margin: 1rem;
+}
+
+.error-message h3 {
+    margin-top: 0;
+}
+
+.data-warning {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    background: rgba(255, 200, 200, 0.95);
+    border-radius: 5px;
+    max-width: 300px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.data-warning p {
+    margin: 0.5rem 0;
 }
