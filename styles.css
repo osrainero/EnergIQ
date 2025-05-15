@@ -59,8 +59,9 @@ body {
 /* Gráficos */
 .chart {
     width: 100%;
-    height: 500px;
+    height: 570px; /* Era 500 y en .js era 500 tambien */ 
     margin-bottom: 15px;
+    
     background: white;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -72,7 +73,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    margin: 1rem 0;
+    margin: 0.5rem 0;
 }
 
 .interval-controls button {

@@ -30,7 +30,7 @@ function initializeChart(config) {
         // 3. Configuración del gráfico
         const margin = { top: 40, right: 40, bottom: 70, left: 60 };
         const width = 1200 - margin.left - margin.right;
-        const height = 500 - margin.top - margin.bottom;
+        const height = 450 - margin.top - margin.bottom;
 
         // 4. Crear SVG y grupos
         const svg = d3.select(`#${config.containerId}`)
