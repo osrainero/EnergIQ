@@ -347,7 +347,8 @@ function groupData() {
                 .transition(t)
                 .attr("cx", d => x(d.tiempo))
                 .attr("cy", d => y(d.valorPromedio))
-                .attr("r", 4);
+                .attr("r", 4)
+                .attr("class", d => `dot ${d.valorPromedio < 0 ? "negative" : ""}`);
         }
 
         function showTooltip(event, d) {
@@ -413,8 +414,3 @@ function groupData() {
 // Inicializar gráfico 1
 initializeChart(chartConfigs.chart1);
 
-/* 
- * Para añadir el gráfico 2 en la siguiente etapa:
- * 1. Añadir configuración en chartConfigs para chart2
- * 2. Llamar a initializeChart(chartConfigs.chart2)
- */

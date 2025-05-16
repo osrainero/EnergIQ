@@ -196,3 +196,12 @@ body {
 .data-warning p {
     margin: 0.5rem 0;
 }
+/* Estilo para la línea cuando hay valores negativos */
+.line.negative {
+    stroke: #e74c3c; /* Rojo para valores negativos */
+}
+
+/* Estilo para puntos negativos */
+.dot.negative {
+    fill: #e74c3c;
+}
