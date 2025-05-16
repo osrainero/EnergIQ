@@ -284,7 +284,15 @@ function groupData() {
 
             // Actualizar escalas
             x.domain(groupedData.map(d => d.tiempo));
-            y.domain([0, d3.max(groupedData, d => d.valorPromedio) * 1.1]);
+            // Calcular mínimo y máximo considerando valores negativos
+            const yMin = d3.min(groupedData, d => d.valorPromedio);
+            const yMax = d3.max(groupedData, d => d.valorPromedio);
+            const yPadding = Math.max(Math.abs(yMin) * 0.1, Math.abs(yMax) * 0.1); // 10% de padding
+
+            y.domain([
+                yMin - yPadding,  // Incluye espacio para valores negativos
+                yMax + yPadding   // Incluye espacio para valores positivos
+            ]);
 
             // Configuración de transiciones
             const t = d3.transition()
@@ -308,7 +316,9 @@ function groupData() {
                 .attr("transform", "rotate(-45)");
 
             yAxis.transition(t)
-                .call(d3.axisLeft(y));
+                .call(d3.axisLeft(y)
+                    .tickFormat(d => d3.format(".2f")(d))  // Formato con 2 decimales
+                );
 
             // Actualizar línea
             path.datum(groupedData)
