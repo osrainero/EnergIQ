@@ -110,31 +110,41 @@ function initializeChart(config) {
         // --------------------------
 
         function validateData(data, columnName) {
-            const results = {
-                validData: [],
-                invalidEntries: [],
-                totalCount: data.length
-            };
+    const results = {
+        validData: [],
+        invalidEntries: [],
+        totalCount: data.length
+    };
 
-            data.forEach(d => {
-                const hasTime = d.hora_str && d.hora_str.trim() !== "";
-                const hasValidValue = !isNaN(d[columnName]) && d[columnName] !== "";
-                
-                if (hasTime && hasValidValue) {
-                    results.validData.push({
-                        tiempo: d.hora_str.trim(),
-                        valor: +d[columnName]
-                    });
-                } else {
-                    results.invalidEntries.push({
-                        ...d,
-                        reason: !hasTime ? "Hora faltante o inválida" : `Valor numérico inválido (${columnName})`
-                    });
-                }
+    // Función para validar formato de hora
+    const isValidTime = (timeStr) => {
+        return /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(timeStr);
+    };
+
+    data.forEach(d => {
+        const hasTime = d.hora_str && isValidTime(d.hora_str.trim());
+        const numericValue = parseFloat(d[columnName]);
+        const hasValidValue = !isNaN(numericValue);
+        
+        if (hasTime && hasValidValue) {
+            results.validData.push({
+                tiempo: d.hora_str.trim(),
+                valor: numericValue  // Usamos el valor ya parseado
             });
-
-            return results;
+        } else {
+            results.invalidEntries.push({
+                ...d,
+                reason: !hasTime ? "Formato de hora inválido (debe ser HH:MM:SS)" : 
+                                `Valor numérico inválido (${columnName}: ${d[columnName]})`
+            });
         }
+    });
+
+    console.log(`Datos válidos para ${columnName}:`, results.validData);
+    console.log(`Datos inválidos para ${columnName}:`, results.invalidEntries);
+    
+    return results;
+}
 
         function displayDataWarnings(validation, chartTitle) {
             const warningContainer = d3.select("body").append("div")
@@ -171,37 +181,48 @@ function initializeChart(config) {
             ];
         }
 
-        function groupData() {
-            const interval = timeIntervals[currentIntervalIndex];
-            
-            if (!interval.unit) {
-                return Array.from(
-                    d3.group(processedData, d => d.tiempo),
-                    ([tiempo, valores]) => ({
-                        tiempo,
-                        valorPromedio: d3.mean(valores, d => d.valor)
-                    })
-                ).sort((a, b) => d3.ascending(a.tiempo, b.tiempo));
-            }
+function groupData() {
+    const interval = timeIntervals[currentIntervalIndex];
+    
+    if (!interval.unit) {
+        return Array.from(
+            d3.group(processedData, d => d.tiempo),
+            ([tiempo, valores]) => ({
+                tiempo,
+                valorPromedio: d3.mean(valores, d => d.valor)
+            })
+        ).sort((a, b) => {
+            // Ordenar correctamente por tiempo
+            const timeA = a.tiempo.split(':').map(Number);
+            const timeB = b.tiempo.split(':').map(Number);
+            return timeA[0] - timeB[0] || timeA[1] - timeB[1] || timeA[2] - timeB[2];
+        });
+    }
 
-            const format = d3.timeFormat("%H:%M:%S");
-            return Array.from(
-                d3.group(processedData, d => {
-                    try {
-                        const date = new Date(`1970-01-01T${d.tiempo}`);
-                        return format(interval.unit.floor(date));
-                    } catch (e) {
-                        console.error("Error al parsear fecha:", d.tiempo, e);
-                        return "invalid";
-                    }
-                }),
-                ([tiempo, valores]) => ({
-                    tiempo,
-                    valorPromedio: d3.mean(valores, d => d.valor)
-                })
-            ).filter(d => d.tiempo !== "invalid")
-             .sort((a, b) => d3.ascending(a.tiempo, b.tiempo));
-        }
+    const format = d3.timeFormat("%H:%M:%S");
+    return Array.from(
+        d3.group(processedData, d => {
+            try {
+                const [hours, minutes, seconds] = d.tiempo.split(':').map(Number);
+                const date = new Date();
+                date.setHours(hours, minutes, seconds, 0);
+                return format(interval.unit.floor(date));
+            } catch (e) {
+                console.error("Error al parsear fecha:", d.tiempo, e);
+                return "invalid";
+            }
+        }),
+        ([tiempo, valores]) => ({
+            tiempo,
+            valorPromedio: d3.mean(valores, d => d.valor)
+        })
+    ).filter(d => d.tiempo !== "invalid")
+     .sort((a, b) => {
+        const timeA = a.tiempo.split(':').map(Number);
+        const timeB = b.tiempo.split(':').map(Number);
+        return timeA[0] - timeB[0] || timeA[1] - timeB[1] || timeA[2] - timeB[2];
+    });
+}
 
         function createIntervalControls(config, intervals) {
             const controls = d3.select(`#${config.containerId}`)
@@ -250,6 +271,17 @@ function initializeChart(config) {
         function updateChart() {
             const groupedData = groupData();
             
+            // Verificación de datos
+            if (groupedData.length === 0) {
+                console.error("No hay datos válidos para mostrar");
+                d3.select(`#${config.containerId}`)
+                    .append("div")
+                    .attr("class", "error-message")
+                    .text("No hay datos válidos para mostrar. Verifique la consola para más detalles.");
+                return;
+            }
+
+
             // Actualizar escalas
             x.domain(groupedData.map(d => d.tiempo));
             y.domain([0, d3.max(groupedData, d => d.valorPromedio) * 1.1]);
