@@ -7,8 +7,16 @@ const chartConfigs = {
         dataColumn: "30.0",
         title: "Consumo Eléctrico",
         yLabel: "Valor promedio (columna 30.0)"
+    },
+        chart2: {
+        containerId: "chart2",
+        tooltipId: "tooltip2",
+        controlsClass: "chart2-controls",
+        dataColumn: "63.0",
+        title: "Consumo Eléctrico",
+        yLabel: "Factor de potencia (columna 63.0)"
     }
-    // chart2 se añadirá en la siguiente etapa
+    
 };
 
 // Función para calcular densidad de etiquetas del eje X
@@ -413,4 +421,5 @@ function groupData() {
 
 // Inicializar gráfico 1
 initializeChart(chartConfigs.chart1);
+initializeChart(chartConfigs.chart2);
 
