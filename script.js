@@ -380,7 +380,7 @@ function initializeChart(config) {
                 .transition(t)
                 .attr("cx", d => x(d.tiempo))
                 .attr("cy", d => y(d.valorPromedio))
-                .attr("r", 4);
+                .attr("r", 3);
         }
 
         // 12. Tooltip

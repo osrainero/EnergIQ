@@ -41,7 +41,7 @@ body {
 }
 
 .chart-header {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .chart-header h2 {
@@ -170,7 +170,7 @@ body {
 }
 
 .dot:hover {
-    fill: #e74c3c;
+    fill: #3c3a3a;
     stroke-width: 2px;
 }
 
