@@ -205,3 +205,88 @@ body {
 .dot.negative {
     fill: #e74c3c;
 }
+
+/* Estilos para las líneas */
+.line-avg {
+    stroke: #3498db;
+    stroke-width: 2px;
+    fill: none;
+}
+
+.line-max {
+    stroke: #e74c3c;
+    stroke-width: 1px;
+    /*stroke-dasharray: 4, 2;*/
+    fill: none;
+    opacity: 0;
+}
+
+.line-min {
+    stroke: #2ecc71;
+    stroke-width: 1px;
+    /*stroke-dasharray: 4, 2;*/
+    fill: none;
+    opacity: 0;
+}
+
+/* Estilos para los puntos */
+.dot {
+    fill: #3498db;
+    stroke: white;
+    stroke-width: 1px;
+    transition: all 0.2s;
+}
+
+/* Estilos para el tooltip */
+#tooltip1, #tooltip2 {
+    position: absolute;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 13px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+    max-width: 250px;
+}
+
+.tooltip-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.tooltip-value {
+    margin: 3px 0;
+}
+
+.tooltip-footer {
+    margin-top: 5px;
+    font-size: 0.8em;
+    color: #7f8c8d;
+}
+
+/* Controles de intervalo */
+.interval-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.interval-btn {
+    padding: 5px 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.interval-btn:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}

@@ -8,37 +8,24 @@ const chartConfigs = {
         title: "Consumo Eléctrico",
         yLabel: "Valor promedio (columna 30.0)"
     },
-        chart2: {
+    chart2: {
         containerId: "chart2",
         tooltipId: "tooltip2",
         controlsClass: "chart2-controls",
         dataColumn: "63.0",
-        title: "Consumo Eléctrico",
+        title: "Factor de Potencia",
         yLabel: "Factor de potencia (columna 63.0)"
     }
-    
 };
 
 // Función para calcular densidad de etiquetas del eje X
 function calculateTickDensity(intervalIndex, dataLength) {
-    // Ajuste dinámico basado en intervalo y cantidad de datos
-    const intervalSize = [
-        5,   // original (valor mínimo)
-        5,   // 5s
-        10,  // 15s
-        15,  // 30s
-        20,  // 1m
-        30,  // 5m
-        40,  // 15m
-        50,  // 30m
-        60   // 1h
-    ][intervalIndex];
+    const intervalSizes = [5, 5, 10, 15, 20, 30, 40, 50, 60];
+    const intervalSize = intervalSizes[intervalIndex] || 5;
     
-    // Asegurar que no mostremos más de 20 etiquetas ni menos de 5
     const maxLabels = 30;
     const minLabels = 10;
     
-    // Calcular densidad basada en el tamaño del intervalo y cantidad de datos
     let density = Math.max(
         minLabels,
         Math.min(
@@ -47,9 +34,98 @@ function calculateTickDensity(intervalIndex, dataLength) {
         )
     );
     
-    // Asegurar que al menos mostremos 1 de cada N puntos
     return Math.max(1, Math.floor(dataLength / density));
 }
+
+// Función para validar datos
+function validateData(data, columnName) {
+    const results = {
+        validData: [],
+        invalidEntries: [],
+        totalCount: data.length
+    };
+
+    const isValidTime = (timeStr) => {
+        return /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(timeStr);
+    };
+
+    data.forEach(d => {
+        const hasTime = d.hora_str && isValidTime(d.hora_str.trim());
+        const numericValue = parseFloat(d[columnName]);
+        const hasValidValue = !isNaN(numericValue);
+        
+        if (hasTime && hasValidValue) {
+            results.validData.push({
+                tiempo: d.hora_str.trim(),
+                valor: numericValue
+            });
+        } else {
+            results.invalidEntries.push({
+                ...d,
+                reason: !hasTime ? "Formato de hora inválido (debe ser HH:MM:SS)" : 
+                                `Valor numérico inválido (${columnName}: ${d[columnName]})`
+            });
+        }
+    });
+
+    return results;
+}
+
+// Función para mostrar advertencias
+function displayDataWarnings(validation, chartTitle) {
+    const warningContainer = d3.select("body").append("div")
+        .attr("class", "data-warning")
+        .style("position", "fixed")
+        .style("bottom", "20px")
+        .style("right", "20px")
+        .style("padding", "15px")
+        .style("background", "rgba(255, 200, 200, 0.9)")
+        .style("border-radius", "5px")
+        .style("max-width", "300px");
+
+    warningContainer.append("p")
+        .text(`⚠️ ${chartTitle}: ${validation.invalidEntries.length} de ${validation.totalCount} registros son inválidos`);
+
+    warningContainer.append("p")
+        .style("font-size", "0.8em")
+        .text("Los registros inválidos han sido excluidos de la visualización.");
+}
+
+// Función para crear intervalos de tiempo
+function createTimeIntervals() {
+    return [
+        { id: 'original', label: 'Valor mínimo original', unit: null },
+        { id: '5s', label: 'Cada 5 segundos', unit: d3.timeSecond.every(5) },
+        { id: '15s', label: 'Cada 15 segundos', unit: d3.timeSecond.every(15) },
+        { id: '30s', label: 'Cada 30 segundos', unit: d3.timeSecond.every(30) },
+        { id: '1m', label: 'Cada 1 minuto', unit: d3.timeMinute.every(1) },
+        { id: '5m', label: 'Cada 5 minutos', unit: d3.timeMinute.every(5) },
+        { id: '15m', label: 'Cada 15 minutos', unit: d3.timeMinute.every(15) },
+        { id: '30m', label: 'Cada 30 minutos', unit: d3.timeMinute.every(30) },
+        { id: '1h', label: 'Cada 1 hora', unit: d3.timeHour.every(1) }
+    ];
+}
+
+// Función para manejar errores
+function handleError(error, containerId, title) {
+    console.error(`Error al cargar los datos para ${title}:`, error);
+    
+    const errorContainer = d3.select(`#${containerId}`).append("div")
+        .attr("class", "error-message")
+        .style("color", "red")
+        .style("padding", "20px")
+        .style("background", "#ffeeee")
+        .style("border", "1px solid #ffcccc")
+        .style("border-radius", "5px");
+    
+    errorContainer.append("h3").text(`Error en ${title}`);
+    errorContainer.append("p").text(`Tipo: ${error.name}`);
+    errorContainer.append("p").text(`Mensaje: ${error.message}`);
+    errorContainer.append("p")
+        .style("font-size", "0.8em")
+        .text("Ver consola para más detalles (F12 > Consola)");
+}
+
 // Función principal
 function initializeChart(config) {
     d3.csv("data.csv").then(function(rawData) {
@@ -95,144 +171,41 @@ function initializeChart(config) {
         const yAxis = chartContent.append("g")
             .attr("class", "y-axis");
 
-        // 6. Línea y puntos
-        const line = d3.line()
+        // 6. Configurar líneas
+        const lineAvg = d3.line()
             .x(d => x(d.tiempo))
             .y(d => y(d.valorPromedio))
             .curve(d3.curveMonotoneX);
 
-        const path = chartContent.append("path")
-            .attr("class", "line");
+        const lineMax = d3.line()
+            .x(d => x(d.tiempo))
+            .y(d => y(d.valorMaximo))
+            .curve(d3.curveMonotoneX);
 
-        // 7. Tooltip
+        const lineMin = d3.line()
+            .x(d => x(d.tiempo))
+            .y(d => y(d.valorMinimo))
+            .curve(d3.curveMonotoneX);
+
+        // 7. Crear paths para las series
+        const pathAvg = chartContent.append("path")
+            .attr("class", "line line-avg");
+
+        const pathMax = chartContent.append("path")
+            .attr("class", "line line-max")
+            .style("stroke", "#e74c3c")
+            .style("opacity", 0);
+
+        const pathMin = chartContent.append("path")
+            .attr("class", "line line-min")
+            .style("stroke", "#2ecc71")
+            .style("opacity", 0);
+
+        // 8. Tooltip
         const tooltip = d3.select(`#${config.tooltipId}`);
 
-        // 8. Controles de intervalo
-        createIntervalControls(config, timeIntervals);
-
-        // 9. Actualización inicial del gráfico
-        updateChart();
-
-        // --------------------------
-        // Funciones principales
-        // --------------------------
-
-        function validateData(data, columnName) {
-    const results = {
-        validData: [],
-        invalidEntries: [],
-        totalCount: data.length
-    };
-
-    // Función para validar formato de hora
-    const isValidTime = (timeStr) => {
-        return /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(timeStr);
-    };
-
-    data.forEach(d => {
-        const hasTime = d.hora_str && isValidTime(d.hora_str.trim());
-        const numericValue = parseFloat(d[columnName]);
-        const hasValidValue = !isNaN(numericValue);
-        
-        if (hasTime && hasValidValue) {
-            results.validData.push({
-                tiempo: d.hora_str.trim(),
-                valor: numericValue  // Usamos el valor ya parseado
-            });
-        } else {
-            results.invalidEntries.push({
-                ...d,
-                reason: !hasTime ? "Formato de hora inválido (debe ser HH:MM:SS)" : 
-                                `Valor numérico inválido (${columnName}: ${d[columnName]})`
-            });
-        }
-    });
-
-    console.log(`Datos válidos para ${columnName}:`, results.validData);
-    console.log(`Datos inválidos para ${columnName}:`, results.invalidEntries);
-    
-    return results;
-}
-
-        function displayDataWarnings(validation, chartTitle) {
-            const warningContainer = d3.select("body").append("div")
-                .attr("class", "data-warning")
-                .style("position", "fixed")
-                .style("bottom", "20px")
-                .style("right", "20px")
-                .style("padding", "15px")
-                .style("background", "rgba(255, 200, 200, 0.9)")
-                .style("border-radius", "5px")
-                .style("max-width", "300px");
-
-            warningContainer.append("p")
-                .text(`⚠️ ${chartTitle}: ${validation.invalidEntries.length} de ${validation.totalCount} registros son inválidos`);
-
-            warningContainer.append("p")
-                .style("font-size", "0.8em")
-                .text("Los registros inválidos han sido excluidos de la visualización.");
-
-            console.table(validation.invalidEntries);
-        }
-
-        function createTimeIntervals() {
-            return [
-                { id: 'original', label: 'Valor mínimo original', unit: null },
-                { id: '5s', label: 'Cada 5 segundos', unit: d3.timeSecond.every(5) },
-                { id: '15s', label: 'Cada 15 segundos', unit: d3.timeSecond.every(15) },
-                { id: '30s', label: 'Cada 30 segundos', unit: d3.timeSecond.every(30) },
-                { id: '1m', label: 'Cada 1 minuto', unit: d3.timeMinute.every(1) },
-                { id: '5m', label: 'Cada 5 minutos', unit: d3.timeMinute.every(5) },
-                { id: '15m', label: 'Cada 15 minutos', unit: d3.timeMinute.every(15) },
-                { id: '30m', label: 'Cada 30 minutos', unit: d3.timeMinute.every(30) },
-                { id: '1h', label: 'Cada 1 hora', unit: d3.timeHour.every(1) }
-            ];
-        }
-
-function groupData() {
-    const interval = timeIntervals[currentIntervalIndex];
-    
-    if (!interval.unit) {
-        return Array.from(
-            d3.group(processedData, d => d.tiempo),
-            ([tiempo, valores]) => ({
-                tiempo,
-                valorPromedio: d3.mean(valores, d => d.valor)
-            })
-        ).sort((a, b) => {
-            // Ordenar correctamente por tiempo
-            const timeA = a.tiempo.split(':').map(Number);
-            const timeB = b.tiempo.split(':').map(Number);
-            return timeA[0] - timeB[0] || timeA[1] - timeB[1] || timeA[2] - timeB[2];
-        });
-    }
-
-    const format = d3.timeFormat("%H:%M:%S");
-    return Array.from(
-        d3.group(processedData, d => {
-            try {
-                const [hours, minutes, seconds] = d.tiempo.split(':').map(Number);
-                const date = new Date();
-                date.setHours(hours, minutes, seconds, 0);
-                return format(interval.unit.floor(date));
-            } catch (e) {
-                console.error("Error al parsear fecha:", d.tiempo, e);
-                return "invalid";
-            }
-        }),
-        ([tiempo, valores]) => ({
-            tiempo,
-            valorPromedio: d3.mean(valores, d => d.valor)
-        })
-    ).filter(d => d.tiempo !== "invalid")
-     .sort((a, b) => {
-        const timeA = a.tiempo.split(':').map(Number);
-        const timeB = b.tiempo.split(':').map(Number);
-        return timeA[0] - timeB[0] || timeA[1] - timeB[1] || timeA[2] - timeB[2];
-    });
-}
-
-        function createIntervalControls(config, intervals) {
+        // 9. Controles de intervalo
+        function createIntervalControls() {
             const controls = d3.select(`#${config.containerId}`)
                 .insert("div", ":first-child")
                 .attr("class", `interval-controls ${config.controlsClass}`);
@@ -241,28 +214,31 @@ function groupData() {
                 .attr("class", "interval-btn")
                 .attr("id", `${config.containerId}-decrease-interval`)
                 .text("−")
-                .on("click", () => changeInterval(-1));
+                .on("click", () => {
+                    if (currentIntervalIndex > 0) {
+                        currentIntervalIndex--;
+                        updateChart();
+                        updateControlButtons();
+                    }
+                });
 
             controls.append("span")
                 .attr("id", `${config.containerId}-current-interval`)
-                .text(intervals[currentIntervalIndex].label);
+                .text(timeIntervals[currentIntervalIndex].label);
 
             controls.append("button")
                 .attr("class", "interval-btn")
                 .attr("id", `${config.containerId}-increase-interval`)
                 .text("+")
-                .on("click", () => changeInterval(1));
+                .on("click", () => {
+                    if (currentIntervalIndex < timeIntervals.length - 1) {
+                        currentIntervalIndex++;
+                        updateChart();
+                        updateControlButtons();
+                    }
+                });
 
             updateControlButtons();
-        }
-
-        function changeInterval(step) {
-            const newIndex = currentIntervalIndex + step;
-            if (newIndex >= 0 && newIndex < timeIntervals.length) {
-                currentIntervalIndex = newIndex;
-                updateChart();
-                updateControlButtons();
-            }
         }
 
         function updateControlButtons() {
@@ -276,45 +252,85 @@ function groupData() {
                 .text(timeIntervals[currentIntervalIndex].label);
         }
 
+        // 10. Función para agrupar datos
+        function groupData() {
+            const interval = timeIntervals[currentIntervalIndex];
+            
+            if (!interval.unit) {
+                return Array.from(
+                    d3.group(processedData, d => d.tiempo),
+                    ([tiempo, valores]) => ({
+                        tiempo,
+                        valorPromedio: d3.mean(valores, d => d.valor),
+                        valorMaximo: null,
+                        valorMinimo: null
+                    })
+                ).sort((a, b) => {
+                    const timeA = a.tiempo.split(':').map(Number);
+                    const timeB = b.tiempo.split(':').map(Number);
+                    return timeA[0] - timeB[0] || timeA[1] - timeB[1] || timeA[2] - timeB[2];
+                });
+            }
+
+            const format = d3.timeFormat("%H:%M:%S");
+            return Array.from(
+                d3.group(processedData, d => {
+                    try {
+                        const [h, m, s] = d.tiempo.split(':').map(Number);
+                        const date = new Date(1970, 0, 1, h, m, s);
+                        return format(interval.unit.floor(date));
+                    } catch(e) {
+                        console.error("Error al parsear fecha:", d.tiempo, e);
+                        return "invalid";
+                    }
+                }),
+                ([tiempo, valores]) => ({
+                    tiempo,
+                    valorPromedio: d3.mean(valores, d => d.valor),
+                    valorMaximo: d3.max(valores, d => d.valor),
+                    valorMinimo: d3.min(valores, d => d.valor)
+                })
+            ).filter(d => d.tiempo !== "invalid").sort((a, b) => {
+                const timeA = a.tiempo.split(':').map(Number);
+                const timeB = b.tiempo.split(':').map(Number);
+                return timeA[0] - timeB[0] || timeA[1] - timeB[1] || timeA[2] - timeB[2];
+            });
+        }
+
+        // 11. Actualizar gráfico
         function updateChart() {
             const groupedData = groupData();
             
-            // Verificación de datos
             if (groupedData.length === 0) {
                 console.error("No hay datos válidos para mostrar");
-                d3.select(`#${config.containerId}`)
-                    .append("div")
-                    .attr("class", "error-message")
-                    .text("No hay datos válidos para mostrar. Verifique la consola para más detalles.");
                 return;
             }
 
-
             // Actualizar escalas
             x.domain(groupedData.map(d => d.tiempo));
-            // Calcular mínimo y máximo considerando valores negativos
-            const yMin = d3.min(groupedData, d => d.valorPromedio);
-            const yMax = d3.max(groupedData, d => d.valorPromedio);
-            const yPadding = Math.max(Math.abs(yMin) * 0.1, Math.abs(yMax) * 0.1); // 10% de padding
-
-            y.domain([
-                yMin - yPadding,  // Incluye espacio para valores negativos
-                yMax + yPadding   // Incluye espacio para valores positivos
+            
+            const allValues = groupedData.flatMap(d => [
+                d.valorPromedio, 
+                d.valorMaximo || 0, 
+                d.valorMinimo || 0
             ]);
+            
+            const yMin = d3.min(allValues);
+            const yMax = d3.max(allValues);
+            const yPadding = Math.max(Math.abs(yMin), Math.abs(yMax)) * 0.1;
+            y.domain([yMin - yPadding, yMax + yPadding]);
 
-            // Configuración de transiciones
+            // Configurar transición
             const t = d3.transition()
                 .duration(750)
                 .ease(d3.easeCubicInOut);
 
-            // Calcular qué etiquetas mostrar
-            //const showEveryN = calculateTickDensity(currentIntervalIndex);
-            //const tickValues = x.domain().filter((d, i) => !(i % showEveryN));
-            const showEveryN = calculateTickDensity(currentIntervalIndex, groupedData.length);
-            const tickValues = x.domain().filter((d, i) => !(i % showEveryN));
+            // Calcular etiquetas a mostrar
+            const tickValues = x.domain().filter((d, i) => 
+                !(i % calculateTickDensity(currentIntervalIndex, groupedData.length))
+            );
 
-
-            // Actualizar ejes con las etiquetas filtradas
+            // Actualizar ejes
             xAxis.transition(t)
                 .call(d3.axisBottom(x).tickValues(tickValues))
                 .selectAll("text")
@@ -324,53 +340,66 @@ function groupData() {
                 .attr("transform", "rotate(-45)");
 
             yAxis.transition(t)
-                .call(d3.axisLeft(y)
-                    .tickFormat(d => d3.format(".2f")(d))  // Formato con 2 decimales
-                );
+                .call(d3.axisLeft(y).tickFormat(d3.format(".2f")));
 
-            // Actualizar línea
-            path.datum(groupedData)
+            // Actualizar series
+            pathAvg.datum(groupedData)
                 .transition(t)
-                .attr("d", line);
+                .attr("d", lineAvg);
+
+            if (currentIntervalIndex > 0) {
+                pathMax.datum(groupedData)
+                    .transition(t)
+                    .style("opacity", 1)
+                    .attr("d", lineMax);
+                
+                pathMin.datum(groupedData)
+                    .transition(t)
+                    .style("opacity", 1)
+                    .attr("d", lineMin);
+            } else {
+                pathMax.transition(t).style("opacity", 0);
+                pathMin.transition(t).style("opacity", 0);
+            }
 
             // Actualizar puntos
             const dots = chartContent.selectAll(".dot")
                 .data(groupedData, d => d.tiempo);
 
-            dots.exit()
-                .transition(t)
-                .attr("r", 0)
-                .remove();
-
-            const dotsEnter = dots.enter()
+            dots.exit().remove();
+            
+            dots.enter()
                 .append("circle")
                 .attr("class", "dot")
                 .attr("r", 0)
                 .attr("cx", d => x(d.tiempo))
                 .attr("cy", height)
                 .on("mouseover", showTooltip)
-                .on("mouseout", hideTooltip);
-
-            dotsEnter.merge(dots)
+                .on("mouseout", hideTooltip)
+                .merge(dots)
                 .transition(t)
                 .attr("cx", d => x(d.tiempo))
                 .attr("cy", d => y(d.valorPromedio))
-                .attr("r", 4)
-                .attr("class", d => `dot ${d.valorPromedio < 0 ? "negative" : ""}`);
+                .attr("r", 4);
         }
 
+        // 12. Tooltip
         function showTooltip(event, d) {
-            tooltip.transition()
-                .duration(200)
-                .style("opacity", 0.95);
+            let html = `<div class="tooltip-title">${d.tiempo}</div>`;
+            html += `<div class="tooltip-value"><strong>Promedio:</strong> ${d.valorPromedio.toFixed(2)}</div>`;
             
-            tooltip.html(`
-                <strong>Intervalo:</strong> ${d.tiempo}<br>
-                <strong>Valor promedio:</strong> ${d.valorPromedio.toFixed(2)}<br>
-                <small>Agrupamiento: ${timeIntervals[currentIntervalIndex].label}</small>
-            `)
-            .style("left", (event.pageX + 10) + "px")
-            .style("top", (event.pageY - 28) + "px");
+            if (currentIntervalIndex > 0) {
+                html += `<div class="tooltip-value"><strong>Máximo:</strong> ${d.valorMaximo.toFixed(2)}</div>`;
+                html += `<div class="tooltip-value"><strong>Mínimo:</strong> ${d.valorMinimo.toFixed(2)}</div>`;
+            }
+            
+            html += `<div class="tooltip-footer">${timeIntervals[currentIntervalIndex].label}</div>`;
+            
+            tooltip.html(html)
+                .style("left", `${event.pageX + 10}px`)
+                .style("top", `${event.pageY - 28}px`)
+                .transition()
+                .style("opacity", 0.95);
         }
 
         function hideTooltip() {
@@ -379,7 +408,7 @@ function groupData() {
                 .style("opacity", 0);
         }
 
-        // Etiquetas de ejes
+        // 13. Etiquetas de ejes
         chartGroup.append("text")
             .attr("class", "axis-label")
             .attr("x", width / 2)
@@ -393,33 +422,13 @@ function groupData() {
             .attr("y", -margin.left + 15)
             .text(config.yLabel);
 
-    }).catch(function(error) {
-        console.error(`Error al cargar los datos para ${config.title}:`, error);
-        
-        const errorContainer = d3.select(`#${config.containerId}`).append("div")
-            .attr("class", "error-message")
-            .style("color", "red")
-            .style("padding", "20px")
-            .style("background", "#ffeeee")
-            .style("border", "1px solid #ffcccc")
-            .style("border-radius", "5px");
-        
-        errorContainer.append("h3")
-            .text(`Error en ${config.title}`);
-        
-        errorContainer.append("p")
-            .text(`Tipo de error: ${error.name}`);
-        
-        errorContainer.append("p")
-            .text(`Mensaje: ${error.message}`);
-        
-        errorContainer.append("p")
-            .style("font-size", "0.8em")
-            .text("Por favor revise la consola para más detalles (F12 > Consola)");
-    });
+        // Inicializar controles y gráfico
+        createIntervalControls();
+        updateChart();
+
+    }).catch(error => handleError(error, config.containerId, config.title));
 }
 
-// Inicializar gráfico 1
+// Inicializar gráficos
 initializeChart(chartConfigs.chart1);
 initializeChart(chartConfigs.chart2);
-
