@@ -341,7 +341,7 @@ function updateMultiLineChart(currentData, prevWeekData, selectedDate) {
             .datum(serie.values)
             .attr("fill", "none")
             .attr("stroke", serie.color)
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 1)
             .attr("d", line);
     });
 
