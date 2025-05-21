@@ -194,7 +194,7 @@ body {
 /* === Chart Axes === */
 .chart-container .axis text,
 .axis-x .tick text {
-    font-size: 12px;
+    font-size: 11px;
     fill: #666;
 }
 
@@ -218,7 +218,7 @@ body {
 }
 
 .axis-label {
-    font-size: 13px;
+    font-size: 11px;
     fill: #444;
     font-weight: 500;
 }
@@ -450,5 +450,5 @@ body {
 }
 
 .chart-container .point:hover {
-    stroke-width: 2;
+    stroke-width: 5;
 }

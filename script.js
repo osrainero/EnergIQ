@@ -364,7 +364,7 @@ function updateMultiLineChart(currentData, prevWeekData, selectedDate) {
             .datum(serie.values)
             .attr("fill", "none")
             .attr("stroke", serie.color)
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 1)
             .attr("class", `line-${serie.name.replace(/\s+/g, '-')}`)
             .attr("d", line);
     });
@@ -424,7 +424,7 @@ function updateMultiLineChart(currentData, prevWeekData, selectedDate) {
                 const tooltipY = yPos + margin.top - 80;
                 
                 tooltip.transition()
-                    .duration(200)
+                    .duration(100)
                     .style("opacity", 0.9)
                     .style("left", `${tooltipX}px`)
                     .style("top", `${tooltipY}px`);
