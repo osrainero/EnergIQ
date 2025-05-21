@@ -1,242 +1,310 @@
-/* Estilos generales */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* === Variables === */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --light-color: #ecf0f1;
+    --dark-color: #2c3e50;
+    --text-color: #333;
+    --text-light: #fff;
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* === Reset & Base === */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
-    color: #333;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--text-color);
     line-height: 1.6;
+    background-color: #f5f7fa;
 }
 
-/* Header principal */
-.main-header {
-    background-color: #2c3e50;
-    color: white;
-    padding: 1.5rem;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+/* === Header === */
+.header {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 1rem 2rem;
+    box-shadow: var(--box-shadow);
+    position: relative;
 }
 
-.main-header h1 {
-    margin: 0;
-    font-size: 2.2rem;
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Contenedor general del dashboard */
-.dashboard {
-    max-width: 1300px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    display: grid;
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+}
+
+.nav-menu {
+    transition: var(--transition);
+}
+
+.menu-list {
+    display: flex;
+    list-style: none;
+    margin-top: 1rem;
+    flex-direction: row;
+}
+
+.menu-list li {
+    margin-right: 1.5rem;
+}
+
+.menu-list a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.menu-list a:hover {
+    color: var(--secondary-color);
+}
+
+/* === Layout Containers === */
+.main-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
 }
 
-/* Contenedores de gráficos */
-.chart-container {
-    background: white;
+.container-left,
+.container-top,
+.container-bottom {
+    background-color: var(--text-light);
     border-radius: 8px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
     padding: 1.5rem;
+    box-shadow: var(--box-shadow);
 }
 
-.chart-header {
-    margin-bottom: 1rem;
+.container-left {
+    flex: 1;
+    min-width: 300px;
 }
 
-.chart-header h2 {
-    color: #2c3e50;
-    margin: 0 0 0.5rem;
-    font-size: 1.4rem;
-}
-
-.chart-description {
-    color: #666;
-    font-size: 0.95rem;
-    margin: 0.5rem 0 1.2rem;
-}
-
-/* Gráficos */
-.chart {
-    width: 100%;
-    height: 570px; /* Ajustado desde 500px */
-    margin-bottom: 15px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-/* Controles de intervalo */
-.interval-controls {
+.container-right {
+    flex: 2;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
+    flex-direction: column;
+    gap: 2rem;
+    min-width: 300px;
 }
 
-.interval-controls button,
-.interval-btn {
-    padding: 0.4rem 0.8rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
+.container-top,
+.container-bottom {
+    width: 100%;
+}
+
+/* === Placeholder === */
+.placeholder {
+    height: 200px;
+    background-color: #f8f9fa;
+    border: 1px dashed #ccc;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    color: #999;
+    margin-top: 1rem;
 }
 
-.interval-controls button:hover,
-.interval-btn:hover {
-    background-color: #2980b9;
+/* === Chart & Legend === */
+.chart-container,
+#lineChartContainer {
+    width: 100%;
+    min-height: 400px;
+    position: relative;
+    border: 1px solid #eee;
+    margin-top: 1rem;
 }
 
-.interval-controls button:disabled,
-.interval-btn:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
+.legend text {
+    font-size: 12px;
+    fill: var(--text-color);
 }
 
-.interval-controls span {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #2c3e50;
-    min-width: 180px;
-    text-align: center;
-}
-
-/* Tooltip genérico y específicos */
-.tooltip,
-#tooltip1,
-#tooltip2 {
-    position: absolute;
+/* === Tooltip === */
+.tooltip {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: white !important;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid #ddd;
     border-radius: 4px;
     pointer-events: none;
     font-size: 13px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    transition: opacity 0.2s;
-    z-index: 10;
-    max-width: 250px;
+    line-height: 1.4;
 }
 
-.tooltip strong,
-.tooltip-title {
-    color: #2c3e50;
-    font-weight: bold;
-    margin-bottom: 5px;
+/* === Date Selector === */
+.date-selector-container {
+    margin: 1rem 0;
 }
 
-.tooltip-value {
-    margin: 3px 0;
+.date-selector-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
 }
 
-.tooltip-footer {
-    margin-top: 5px;
-    font-size: 0.8em;
-    color: #7f8c8d;
-}
-
-/* Elementos SVG del gráfico */
-.axis-label,
-.tick text {
-    font-size: 12px;
-    fill: #666;
-}
-
-.tick line {
-    stroke: #e0e0e0;
-}
-
-.domain {
-    stroke: #ccc;
-}
-
-/* Estilos para puntos del gráfico */
-.dot {
-    fill: #3498db;
-    stroke: white;
-    stroke-width: 1px;
-    transition: all 0.2s;
-}
-
-.dot:hover {
-    fill: #3c3a3a;
-    stroke-width: 2px;
-}
-
-.dot.negative {
-    fill: #e74c3c;
-}
-
-/* Estilos para líneas del gráfico */
-.line {
-    fill: none;
-    stroke: #3498db;
-    stroke-width: 2px;
-    stroke-linejoin: round;
-}
-
-.line.negative {
-    stroke: #e74c3c;
-}
-
-.line-avg {
-    stroke: #3498db;
-    stroke-width: 2px;
-    fill: none;
-}
-
-.line-max {
-    stroke: #e74c3c;
-    stroke-width: 1px;
-    fill: none;
-    opacity: 0;
-}
-
-.line-min {
-    stroke: #2ecc71;
-    stroke-width: 1px;
-    fill: none;
-    opacity: 0;
-}
-
-/* Mensajes de error */
-.error-message {
-    color: #c0392b;
-    padding: 1rem;
-    background: #fdecea;
-    border: 1px solid #f5b7b1;
+.date-selector {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    margin: 1rem;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    background-color: white;
 }
 
+/* === Messages === */
+.diagnostic-info,
+.loading-message {
+    background-color: #f8f9fa;
+    border-left: 4px solid var(--secondary-color);
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.diagnostic-info h3,
 .error-message h3 {
     margin-top: 0;
 }
 
-/* Advertencias de datos */
-.data-warning {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 15px;
-    background: rgba(255, 200, 200, 0.95);
-    border-radius: 5px;
-    max-width: 300px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+.error-message {
+    background-color: #fee;
+    border-left: 4px solid var(--accent-color);
+    padding: 1rem;
+    margin: 1rem 0;
+    color: var(--accent-color);
 }
 
-.data-warning p {
-    margin: 0.5rem 0;
+/* === Responsive === */
+@media (max-width: 992px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+
+    .container-left,
+    .container-right {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-menu {
+        max-height: 0;
+        overflow: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--primary-color);
+        z-index: 1000;
+    }
+
+    .nav-menu.active {
+        max-height: 500px;
+        padding: 1rem 2rem;
+    }
+
+    .menu-list {
+        flex-direction: column;
+    }
+
+    .menu-list li {
+        margin: 0.5rem 0;
+    }
+
+    .main-container {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .container-left,
+    .container-top,
+    .container-bottom {
+        padding: 1rem;
+    }
+}
+/* Agrega esto a tu styles.css */
+.diagnostic-info {
+    background-color: #f8f9fa;
+    border-left: 4px solid #2ecc71;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.diagnostic-info h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.diagnostic-info h4 {
+    margin-bottom: 0.5rem;
+}
+
+.data-sample pre {
+    background-color: #f0f0f0;
+    padding: 0.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.8rem;
+}
+
+.loading-message {
+    color: #3498db;
+    font-weight: 500;
+}
+
+.error-message {
+    background-color: #fee;
+    border-left: 4px solid #e74c3c;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.error-message h3 {
+    color: #e74c3c;
+    margin-top: 0;
 }
