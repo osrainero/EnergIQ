@@ -261,25 +261,42 @@ function processData(rawData) {
 
     // Función para actualizar el gráfico (se mantiene igual que en tu versión)
 function updateMultiLineChart(currentData, prevWeekData, selectedDate) {
-    console.log("Actualizando gráfico...");
+    console.log("Actualizando gráfico con todas las correcciones finales...");
     
-    // Limpiar el contenedor completamente
+    // Limpiar el contenedor
     const container = d3.select("#containerB .chart-container");
     container.html("");
     
-    // Verificar si hay datos
     if (!currentData || currentData.length === 0) {
         showError("#containerB .chart-container", "No hay datos para mostrar");
         return;
     }
 
-    // Dimensiones responsivas
+    // 1. Procesar datos en intervalos de 5 minutos
+    const processedData = process5MinuteIntervals(currentData);
+    console.log("Datos procesados:", processedData);
+
+    // 2. Determinar rango horario dinámico (hasta última hora + 1)
+    const horas = processedData.map(d => d.hora);
+    const primeraHora = parseInt(horas[0].split(':')[0]);
+    let ultimaHora = parseInt(horas[horas.length - 1].split(':')[0]);
+    ultimaHora = ultimaHora + 1; // Añadimos 1 hora extra al final
+    
+    console.log(`Rango horario detectado: ${primeraHora}:00 a ${ultimaHora}:00`);
+
+    // 3. Generar marcas horarias dentro del rango extendido
+    const horasCompletas = [];
+    for (let h = primeraHora; h <= ultimaHora; h++) {
+        horasCompletas.push(`${h}:00`);
+    }
+
+    // Dimensiones
     const containerWidth = container.node().getBoundingClientRect().width;
-    const margin = {top: 30, right: 80, bottom: 70, left: 60};
+    const margin = {top: 30, right: 60, bottom: 70, left: 60};
     const width = containerWidth - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
-    // Crear SVG principal
+    // Crear SVG
     const svg = container
         .append("svg")
         .attr("width", "100%")
@@ -287,52 +304,58 @@ function updateMultiLineChart(currentData, prevWeekData, selectedDate) {
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Preparar datos para debug
-    console.log("Datos para gráfico (primeras 3 filas):", currentData.slice(0, 3));
-    
-    // Escala X - Horas
-    const horas = currentData.map(d => d.hora);
-    const x = d3.scalePoint()
-        .domain(horas)
-        .range([0, width])
-        .padding(0.5);
+    // 4. Escala X mejorada con rango extendido
+    const x = d3.scaleLinear()
+        .domain([0, horasCompletas.length - 1])
+        .range([0, width]);
 
-    // Escala Y - Valores
-    const maxValor = d3.max(currentData, d => Math.max(d.potenciaTotal, d.faseS, d.faseR, d.faseT));
+    // Escala Y
+    const maxValor = d3.max(processedData, d => Math.max(d.potenciaTotal, d.faseS, d.faseR, d.faseT));
     const y = d3.scaleLinear()
-        .domain([0, maxValor * 1.1]) // 10% más de espacio
+        .domain([0, maxValor * 1.1])
         .range([height, 0])
         .nice();
 
-    // Debug de escalas
-    console.log("Escala X (horas):", horas);
-    console.log("Escala Y (valores): Dominio [0,", maxValor * 1.1, "]");
-
-    // Eje X
+    // Eje Y visible
     svg.append("g")
+        .attr("class", "axis-y")
+        .call(d3.axisLeft(y));
+
+    // Eje X con marcas horarias y rango extendido
+    const xAxis = svg.append("g")
+        .attr("class", "axis-x")
         .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(x))
-        .selectAll("text")
+        .call(d3.axisBottom(x)
+            .tickFormat(d => horasCompletas[d])
+            .tickValues(d3.range(horasCompletas.length))
+        );
+
+    // Rotar etiquetas del eje X
+    xAxis.selectAll("text")
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", "rotate(-45)");
 
-    // Eje Y
-    svg.append("g")
-        .call(d3.axisLeft(y));
+    // Función para calcular posición X exacta
+    const getXPosition = (hora) => {
+        const [h, m] = hora.split(':');
+        const horaBase = horasCompletas.indexOf(`${h}:00`);
+        const minutosOffset = parseInt(m) / 60;
+        return x(horaBase + minutosOffset);
+    };
 
-    // Líneas
+    // Función para dibujar líneas
     const line = d3.line()
-        .x(d => x(d.hora))
+        .x(d => getXPosition(d.hora))
         .y(d => y(d.value));
 
     // Series de datos
     const series = [
-        {name: "Potencia Total", values: currentData.map(d => ({hora: d.hora, value: d.potenciaTotal})), color: "#2c3e50"},
-        {name: "Fase S", values: currentData.map(d => ({hora: d.hora, value: d.faseS})), color: "#e74c3c"},
-        {name: "Fase R", values: currentData.map(d => ({hora: d.hora, value: d.faseR})), color: "#3498db"},
-        {name: "Fase T", values: currentData.map(d => ({hora: d.hora, value: d.faseT})), color: "#2ecc71"}
+        {name: "Potencia Total", values: processedData.map(d => ({hora: d.hora, value: d.potenciaTotal})), color: "#2c3e50"},
+        {name: "Fase S", values: processedData.map(d => ({hora: d.hora, value: d.faseS})), color: "#e74c3c"},
+        {name: "Fase R", values: processedData.map(d => ({hora: d.hora, value: d.faseR})), color: "#3498db"},
+        {name: "Fase T", values: processedData.map(d => ({hora: d.hora, value: d.faseT})), color: "#2ecc71"}
     ];
 
     // Dibujar líneas
@@ -341,63 +364,120 @@ function updateMultiLineChart(currentData, prevWeekData, selectedDate) {
             .datum(serie.values)
             .attr("fill", "none")
             .attr("stroke", serie.color)
-            .attr("stroke-width", 1)
+            .attr("stroke-width", 2)
+            .attr("class", `line-${serie.name.replace(/\s+/g, '-')}`)
             .attr("d", line);
     });
 
-    // Leyenda
-    const legend = svg.selectAll(".legend")
-        .data(series)
-        .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", (d, i) => `translate(${width - 150},${i * 20})`);
+    // Dibujar puntos (tamaño configurable aquí - 5px)
+    const pointSize = 2;
+    series.forEach(serie => {
+        svg.selectAll(`.point-${serie.name.replace(/\s+/g, '-')}`)
+            .data(serie.values)
+            .enter()
+            .append("circle")
+            .attr("class", `point-${serie.name.replace(/\s+/g, '-')}`)
+            .attr("cx", d => getXPosition(d.hora))
+            .attr("cy", d => y(d.value))
+            .attr("r", pointSize)
+            .attr("fill", serie.color);
+    });
 
-    legend.append("rect")
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", d => d.color);
+    // Leyenda (cuadro flotante de referencia)
+    const legend = svg.append("g")
+        .attr("class", "chart-legend")
+        .attr("transform", `translate(${width - 120}, 20)`);
 
-    legend.append("text")
-        .attr("x", 24)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "start")
-        .text(d => d.name);
+    series.forEach((serie, i) => {
+        const legendItem = legend.append("g")
+            .attr("transform", `translate(0, ${i * 25})`);
 
-    // Tooltip
+        legendItem.append("rect")
+            .attr("width", 18)
+            .attr("height", 18)
+            .attr("rx", 3)
+            .style("fill", serie.color);
+
+        legendItem.append("text")
+            .attr("x", 24)
+            .attr("y", 9)
+            .attr("dy", "0.35em")
+            .style("font-size", "12px")
+            .text(serie.name);
+    });
+
+    // Tooltip mejorado con posicionamiento relativo al punto
     const tooltip = container.append("div")
         .attr("class", "chart-tooltip")
         .style("opacity", 0);
 
-    // Eventos para interactividad
+    // Eventos para interactividad mejorada
     series.forEach(serie => {
-        svg.selectAll(`.dot-${serie.name.replace(/\s+/g, '')}`)
-            .data(serie.values)
-            .enter().append("circle")
-            .attr("class", `dot-${serie.name.replace(/\s+/g, '')}`)
-            .attr("cx", d => x(d.hora))
-            .attr("cy", d => y(d.value))
-            .attr("r", 4)
-            .attr("fill", serie.color)
+        svg.selectAll(`.point-${serie.name.replace(/\s+/g, '-')}`)
             .on("mouseover", function(event, d) {
+                // Aumentar tamaño del punto
+                d3.select(this).attr("r", pointSize + 2);
+                
+                // Posicionar tooltip relativo al punto
+                const [xPos, yPos] = d3.pointer(event, svg.node());
+                const tooltipX = xPos + margin.left + 20;
+                const tooltipY = yPos + margin.top - 80;
+                
                 tooltip.transition()
                     .duration(200)
-                    .style("opacity", .9);
+                    .style("opacity", 0.9)
+                    .style("left", `${tooltipX}px`)
+                    .style("top", `${tooltipY}px`);
+                
                 tooltip.html(`
-                    <strong>${serie.name}</strong><br>
-                    Hora: ${d.hora}<br>
-                    Valor: ${d.value.toFixed(2)} kW
-                `)
-                    .style("left", `${event.pageX}px`)
-                    .style("top", `${event.pageY - 28}px`);
+                    <div class="tooltip-title">${serie.name}</div>
+                    <div><strong>Hora:</strong> ${d.hora}</div>
+                    <div><strong>Valor:</strong> ${d.value.toFixed(2)} kW</div>
+                `);
             })
             .on("mouseout", function() {
+                // Restaurar tamaño original del punto
+                d3.select(this).attr("r", pointSize);
                 tooltip.transition()
                     .duration(500)
                     .style("opacity", 0);
             });
     });
-
-    console.log("Gráfico renderizado correctamente");
+}
+// Función para procesar datos en intervalos de 5 minutos
+function process5MinuteIntervals(data) {
+    // Agrupar por intervalos de 5 minutos
+    const groupedData = {};
+    
+    data.forEach(item => {
+        const [hours, minutes] = item.hora.split(':');
+        const hour = parseInt(hours);
+        const minute = Math.floor(parseInt(minutes) / 5) * 5; // Redondear a múltiplo de 5
+        const intervalKey = `${hour}:${minute.toString().padStart(2, '0')}`;
+        
+        if (!groupedData[intervalKey]) {
+            groupedData[intervalKey] = {
+                hora: intervalKey,
+                potenciaTotal: [],
+                faseS: [],
+                faseR: [],
+                faseT: []
+            };
+        }
+        
+        groupedData[intervalKey].potenciaTotal.push(item.potenciaTotal);
+        groupedData[intervalKey].faseS.push(item.faseS);
+        groupedData[intervalKey].faseR.push(item.faseR);
+        groupedData[intervalKey].faseT.push(item.faseT);
+    });
+    
+    // Calcular máximos por intervalo
+    return Object.values(groupedData).map(interval => ({
+        hora: interval.hora,
+        potenciaTotal: d3.max(interval.potenciaTotal),
+        faseS: d3.max(interval.faseS),
+        faseR: d3.max(interval.faseR),
+        faseT: d3.max(interval.faseT)
+    }));
 }
 });

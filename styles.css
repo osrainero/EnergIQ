@@ -10,6 +10,10 @@
     --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+    --success-color: #2ecc71;
+    --background-light: #f8f9fa;
+    --border-light: #eee;
+    --border-color: #ddd;
 }
 
 /* === Reset & Base === */
@@ -124,7 +128,7 @@ body {
 /* === Placeholder === */
 .placeholder {
     height: 200px;
-    background-color: #f8f9fa;
+    background-color: var(--background-light);
     border: 1px dashed #ccc;
     border-radius: 4px;
     display: flex;
@@ -140,8 +144,13 @@ body {
     width: 100%;
     min-height: 400px;
     position: relative;
-    border: 1px solid #eee;
-    margin-top: 1rem;
+    border: 1px solid var(--border-light);
+    margin: 20px 0;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    overflow: visible;
 }
 
 .legend text {
@@ -149,15 +158,111 @@ body {
     fill: var(--text-color);
 }
 
-/* === Tooltip === */
-.tooltip {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background: white !important;
+/* === Chart Lines & Points === */
+.chart-container .line {
+    stroke-width: 1;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.chart-container .line-Potencia-Total {
+    stroke: var(--primary-color);
+}
+
+.chart-container .line-Fase-S {
+    stroke: var(--accent-color);
+}
+
+.chart-container .line-Fase-R {
+    stroke: var(--secondary-color);
+}
+
+.chart-container .line-Fase-T {
+    stroke: var(--success-color);
+}
+
+.chart-container .point {
+    stroke: white;
+    stroke-width: 1;
+    transition: r 0.2s ease, stroke-width 0.2s ease;
+}
+
+.chart-container .point:hover {
+    stroke-width: 2;
+}
+
+/* === Chart Axes === */
+.chart-container .axis text,
+.axis-x .tick text {
+    font-size: 12px;
+    fill: #666;
+}
+
+.chart-container .axis path,
+.chart-container .axis line,
+.axis-y path,
+.axis-x path {
+    stroke: #ccc;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.axis-x .tick:first-child text,
+.axis-x .tick:last-child text {
+    font-weight: bold;
+    fill: #333;
+}
+
+.axis-x .tick:nth-child(2n) text {
+    opacity: 0.7;
+}
+
+.axis-label {
+    font-size: 13px;
+    fill: #444;
+    font-weight: 500;
+}
+
+/* === Chart Legend === */
+.chart-container .chart-legend rect {
+    stroke: var(--border-light);
+    stroke-width: 1;
+    rx: 3;
+    ry: 3;
+}
+
+.chart-container .chart-legend text {
+    font-size: 12px;
+    fill: #333;
+}
+
+/* === Tooltips === */
+.tooltip,
+.chart-tooltip {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
     padding: 10px;
-    border-radius: 4px;
     pointer-events: none;
     font-size: 13px;
-    line-height: 1.4;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(2px);
+    min-width: 160px;
+    z-index: 100;
+}
+
+.tooltip-header,
+.tooltip-title {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 3px;
+}
+
+.chart-tooltip div {
+    margin: 3px 0;
 }
 
 /* === Date Selector === */
@@ -175,26 +280,30 @@ body {
 .date-selector {
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-family: var(--font-main);
     font-size: 1rem;
     background-color: white;
 }
 
-/* === Messages === */
+/* === Message Components === */
 .diagnostic-info,
 .loading-message {
-    background-color: #f8f9fa;
-    border-left: 4px solid var(--secondary-color);
+    background-color: var(--background-light);
     padding: 1rem;
     margin: 1rem 0;
     font-size: 0.9rem;
 }
 
-.diagnostic-info h3,
-.error-message h3 {
-    margin-top: 0;
+.diagnostic-info {
+    border-left: 4px solid var(--success-color);
+}
+
+.loading-message {
+    border-left: 4px solid var(--secondary-color);
+    color: var(--secondary-color);
+    font-weight: 500;
 }
 
 .error-message {
@@ -203,6 +312,25 @@ body {
     padding: 1rem;
     margin: 1rem 0;
     color: var(--accent-color);
+}
+
+.diagnostic-info h3,
+.error-message h3 {
+    margin-top: 0;
+    color: inherit;
+}
+
+.diagnostic-info h4 {
+    margin-bottom: 0.5rem;
+}
+
+/* === Data Display === */
+.data-sample pre {
+    background-color: #f0f0f0;
+    padding: 0.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.8rem;
 }
 
 /* === Responsive === */
@@ -266,141 +394,61 @@ body {
         padding: 1rem;
     }
 }
-/* Agrega esto a tu styles.css */
-.diagnostic-info {
-    background-color: #f8f9fa;
-    border-left: 4px solid #2ecc71;
-    padding: 1rem;
-    margin: 1rem 0;
-    font-size: 0.9rem;
+/* Estilos para la leyenda */
+.chart-legend {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.diagnostic-info h3 {
-    margin-top: 0;
-    color: #2c3e50;
-}
-
-.diagnostic-info h4 {
-    margin-bottom: 0.5rem;
-}
-
-.data-sample pre {
-    background-color: #f0f0f0;
-    padding: 0.5rem;
-    border-radius: 4px;
-    overflow-x: auto;
-    font-size: 0.8rem;
-}
-
-.loading-message {
-    color: #3498db;
-    font-weight: 500;
-}
-
-.error-message {
-    background-color: #fee;
-    border-left: 4px solid #e74c3c;
-    padding: 1rem;
-    margin: 1rem 0;
-}
-
-.error-message h3 {
-    color: #e74c3c;
-    margin-top: 0;
-}
-/* Estilos para el gráfico */
-.chart-container {
-    width: 100%;
-    height: 500px;
-    margin: 20px 0;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 15px;
-    overflow: visible;
-}
-
-/* Líneas del gráfico */
-.chart-container .line {
-    stroke-width: 2;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-}
-
-.chart-container .line-Potencia-Total {
-    stroke: #2c3e50;
-}
-
-.chart-container .line-Fase-S {
-    stroke: #e74c3c;
-}
-
-.chart-container .line-Fase-R {
-    stroke: #3498db;
-}
-
-.chart-container .line-Fase-T {
-    stroke: #2ecc71;
-}
-
-/* Puntos del gráfico */
-.chart-container .point {
-    stroke: white;
-    stroke-width: 1;
-    transition: r 0.2s ease;
-}
-
-.chart-container .point:hover {
-    stroke-width: 2;
-}
-
-/* Ejes */
-.chart-container .axis text {
-    font-size: 12px;
-    fill: #666;
-}
-
-.chart-container .axis path,
-.chart-container .axis line {
-    stroke: #ddd;
-    shape-rendering: crispEdges;
-}
-
-/* Leyenda */
-.chart-container .chart-legend rect {
-    stroke: #eee;
-    stroke-width: 1;
-    rx: 3;
-    ry: 3;
-}
-
-.chart-container .chart-legend text {
+.chart-legend text {
     font-size: 12px;
     fill: #333;
 }
 
-/* Tooltip */
-.chart-tooltip {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 10px;
-    pointer-events: none;
-    font-size: 13px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-    backdrop-filter: blur(2px);
-    min-width: 160px;
+.chart-legend rect {
+    stroke: #eee;
+    stroke-width: 1;
 }
 
-.tooltip-header {
+/* Tooltip mejorado */
+.chart-tooltip {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 15px;
+    pointer-events: none;
+    font-size: 13px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+    backdrop-filter: blur(2px);
+    min-width: 160px;
+    z-index: 100;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+}
+
+.tooltip-title {
     font-weight: bold;
     color: #2c3e50;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
     border-bottom: 1px solid #eee;
-    padding-bottom: 3px;
 }
 
 .chart-tooltip div {
-    margin: 3px 0;
+    margin: 4px 0;
+    line-height: 1.4;
+}
+
+/* Puntos del gráfico */
+.chart-container .point {
+    transition: all 0.2s ease;
+    stroke: white;
+    stroke-width: 1;
+}
+
+.chart-container .point:hover {
+    stroke-width: 2;
 }
