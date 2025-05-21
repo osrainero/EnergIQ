@@ -1,454 +1,394 @@
-/* === Variables === */
+/* === Variables de Color === */
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --light-color: #ecf0f1;
-    --dark-color: #2c3e50;
-    --text-color: #333;
-    --text-light: #fff;
-    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
-    --success-color: #2ecc71;
-    --background-light: #f8f9fa;
-    --border-light: #eee;
-    --border-color: #ddd;
+  /* Colores principales */
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --success-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --warning-color: #f39c12;
+  
+  /* Colores de las series (actualizados según JS) */
+  --fase-r-color: #FF5733;
+  --fase-s-color: #33FF57;
+  --fase-t-color: #4061f7;
+  --potencia-color: #364452;
+  
+  /* Escala de grises */
+  --light-color: #ecf0f1;
+  --dark-color: #2c3e50;
+  --text-color: #333;
+  --text-light: #fff;
+  --background-light: #f8f9fa;
+  --border-light: #eee;
+  --border-color: #ddd;
+  
+  /* Tipografía */
+  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+  /* Efectos */
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
 }
 
 /* === Reset & Base === */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: var(--font-main);
-    color: var(--text-color);
-    line-height: 1.6;
-    background-color: #f5f7fa;
+  font-family: var(--font-main);
+  color: var(--text-color);
+  line-height: 1.6;
+  background-color: #f5f7fa;
 }
 
 /* === Header === */
 .header {
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    padding: 1rem 2rem;
-    box-shadow: var(--box-shadow);
-    position: relative;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 1rem 2rem;
+  box-shadow: var(--box-shadow);
+  position: relative;
 }
 
 .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .logo {
-    font-size: 1.8rem;
-    font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-light);
 }
 
 .menu-toggle {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: none;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: none;
 }
 
 .nav-menu {
-    transition: var(--transition);
+  transition: var(--transition);
 }
 
 .menu-list {
-    display: flex;
-    list-style: none;
-    margin-top: 1rem;
-    flex-direction: row;
+  display: flex;
+  list-style: none;
 }
 
 .menu-list li {
-    margin-right: 1.5rem;
+  margin-left: 1.5rem;
 }
 
 .menu-list a {
-    color: var(--text-light);
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
 }
 
 .menu-list a:hover {
-    color: var(--secondary-color);
+  color: var(--secondary-color);
 }
 
 /* === Layout Containers === */
 .main-container {
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .content-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
 }
 
 .container-left,
-.container-top,
-.container-bottom {
-    background-color: var(--text-light);
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: var(--box-shadow);
+.container-right {
+  background-color: var(--text-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--box-shadow);
 }
 
 .container-left {
-    flex: 1;
-    min-width: 300px;
+  flex: 1;
+  min-width: 300px;
 }
 
 .container-right {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    min-width: 300px;
+  flex: 2;
+  min-width: 300px;
 }
 
-.container-top,
-.container-bottom {
-    width: 100%;
+/* === Componentes del Gráfico === */
+.chart-container {
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+  margin: 20px 0;
 }
 
-/* === Placeholder === */
-.placeholder {
-    height: 200px;
-    background-color: var(--background-light);
-    border: 1px dashed #ccc;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #999;
-    margin-top: 1rem;
+/* Ejes del gráfico */
+.axis text {
+  font-size: 12px;
+  fill: #666;
 }
 
-/* === Chart & Legend === */
-.chart-container,
-#lineChartContainer {
-    width: 100%;
-    min-height: 400px;
-    position: relative;
-    border: 1px solid var(--border-light);
-    margin: 20px 0;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    overflow: visible;
+.axis path,
+.axis line {
+  stroke: #ccc;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
 }
 
-.legend text {
-    font-size: 12px;
-    fill: var(--text-color);
+.axis-y .tick text {
+  font-size: 11px;
 }
 
-/* === Chart Lines & Points === */
-.chart-container .line {
-    stroke-width: 1;
-    stroke-linejoin: round;
-    stroke-linecap: round;
+/* Líneas del gráfico */
+.line {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
-.chart-container .line-Potencia-Total {
-    stroke: var(--primary-color);
+.line-Fase-R {
+  stroke: var(--fase-r-color);
+  stroke-width: 1;
 }
 
-.chart-container .line-Fase-S {
-    stroke: var(--accent-color);
+.line-Fase-S {
+  stroke: var(--fase-s-color);
+  stroke-width: 1;
 }
 
-.chart-container .line-Fase-R {
-    stroke: var(--secondary-color);
+.line-Fase-T {
+  stroke: var(--fase-t-color);
+  stroke-width: 1;
 }
 
-.chart-container .line-Fase-T {
-    stroke: var(--success-color);
+.line-Potencia-Total {
+  stroke: var(--potencia-color);
+  stroke-width: 2;
 }
 
-.chart-container .point {
-    stroke: white;
-    stroke-width: 1;
-    transition: r 0.2s ease, stroke-width 0.2s ease;
+/* Puntos del gráfico */
+.point {
+  transition: all 0.2s ease;
+  stroke: white;
+  stroke-width: 1;
 }
 
-.chart-container .point:hover {
-    stroke-width: 2;
+.point-Fase-R {
+  fill: var(--fase-r-color);
 }
 
-/* === Chart Axes === */
-.chart-container .axis text,
-.axis-x .tick text {
-    font-size: 11px;
-    fill: #666;
+.point-Fase-S {
+  fill: var(--fase-s-color);
 }
 
-.chart-container .axis path,
-.chart-container .axis line,
-.axis-y path,
-.axis-x path {
-    stroke: #ccc;
-    stroke-width: 1;
-    shape-rendering: crispEdges;
+.point-Fase-T {
+  fill: var(--fase-t-color);
 }
 
-.axis-x .tick:first-child text,
-.axis-x .tick:last-child text {
-    font-weight: bold;
-    fill: #333;
+.point-Potencia-Total {
+  fill: var(--potencia-color);
 }
 
-.axis-x .tick:nth-child(2n) text {
-    opacity: 0.7;
+.point:hover {
+  stroke-width: 2;
+  r: 5;
 }
 
-.axis-label {
-    font-size: 11px;
-    fill: #444;
-    font-weight: 500;
+/* Leyenda del gráfico */
+.chart-legend {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: var(--box-shadow);
 }
 
-/* === Chart Legend === */
-.chart-container .chart-legend rect {
-    stroke: var(--border-light);
-    stroke-width: 1;
-    rx: 3;
-    ry: 3;
+.chart-legend text {
+  font-size: 12px;
+  fill: var(--text-color);
 }
 
-.chart-container .chart-legend text {
-    font-size: 12px;
-    fill: #333;
+.chart-legend rect {
+  stroke: var(--border-light);
+  stroke-width: 1;
 }
 
-/* === Tooltips === */
-.tooltip,
+/* Tooltip */
 .chart-tooltip {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 10px;
-    pointer-events: none;
-    font-size: 13px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(2px);
-    min-width: 160px;
-    z-index: 100;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px 15px;
+  pointer-events: none;
+  font-size: 13px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  backdrop-filter: blur(2px);
+  min-width: 180px;
+  z-index: 100;
+  transition: opacity 0.3s ease, transform 0.2s ease;
 }
 
-.tooltip-header,
-.tooltip-title {
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 5px;
-    border-bottom: 1px solid var(--border-light);
-    padding-bottom: 3px;
+.tooltip-header {
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.chart-tooltip div {
-    margin: 3px 0;
+.tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
 }
 
-/* === Date Selector === */
+.tooltip-row span:first-child {
+  font-weight: 500;
+  color: #555;
+}
+
+.tooltip-row span:last-child {
+  font-weight: 600;
+  color: #222;
+}
+
+/* === Selector de Fechas === */
 .date-selector-container {
-    margin: 1rem 0;
+  margin: 1rem 0;
 }
 
 .date-selector-container label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: var(--primary-color);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
 }
 
 .date-selector {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-family: var(--font-main);
-    font-size: 1rem;
-    background-color: white;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: var(--font-main);
+  font-size: 1rem;
 }
 
-/* === Message Components === */
-.diagnostic-info,
-.loading-message {
-    background-color: var(--background-light);
-    padding: 1rem;
-    margin: 1rem 0;
-    font-size: 0.9rem;
-}
-
+/* === Mensajes === */
 .diagnostic-info {
-    border-left: 4px solid var(--success-color);
+  background-color: var(--background-light);
+  padding: 1rem;
+  border-left: 4px solid var(--success-color);
+  margin: 1rem 0;
 }
 
 .loading-message {
-    border-left: 4px solid var(--secondary-color);
-    color: var(--secondary-color);
-    font-weight: 500;
+  background-color: var(--background-light);
+  padding: 1rem;
+  border-left: 4px solid var(--secondary-color);
+  color: var(--secondary-color);
+  font-weight: 500;
+  margin: 1rem 0;
 }
 
 .error-message {
-    background-color: #fee;
-    border-left: 4px solid var(--accent-color);
-    padding: 1rem;
-    margin: 1rem 0;
-    color: var(--accent-color);
-}
-
-.diagnostic-info h3,
-.error-message h3 {
-    margin-top: 0;
-    color: inherit;
-}
-
-.diagnostic-info h4 {
-    margin-bottom: 0.5rem;
-}
-
-/* === Data Display === */
-.data-sample pre {
-    background-color: #f0f0f0;
-    padding: 0.5rem;
-    border-radius: 4px;
-    overflow-x: auto;
-    font-size: 0.8rem;
+  background-color: #fee;
+  padding: 1rem;
+  border-left: 4px solid var(--danger-color);
+  color: var(--danger-color);
+  margin: 1rem 0;
 }
 
 /* === Responsive === */
 @media (max-width: 992px) {
-    .content-wrapper {
-        flex-direction: column;
-    }
-
-    .container-left,
-    .container-right {
-        width: 100%;
-    }
+  .content-wrapper {
+    flex-direction: column;
+  }
+  
+  .container-left,
+  .container-right {
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
-    }
-
-    .nav-menu {
-        max-height: 0;
-        overflow: hidden;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: var(--primary-color);
-        z-index: 1000;
-    }
-
-    .nav-menu.active {
-        max-height: 500px;
-        padding: 1rem 2rem;
-    }
-
-    .menu-list {
-        flex-direction: column;
-    }
-
-    .menu-list li {
-        margin: 0.5rem 0;
-    }
-
-    .main-container {
-        padding: 1rem;
-    }
+  .menu-toggle {
+    display: block;
+  }
+  
+  .nav-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--primary-color);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  
+  .nav-menu.active {
+    max-height: 500px;
+    padding: 1rem 2rem;
+  }
+  
+  .menu-list {
+    flex-direction: column;
+  }
+  
+  .menu-list li {
+    margin: 0.5rem 0;
+  }
+  
+  .main-container {
+    padding: 1rem;
+  }
+  
+  /* Ajustes para gráficos en móviles */
+  .chart-container {
+    min-height: 300px;
+  }
+  
+  .point {
+    r: 3;
+  }
 }
 
 @media (max-width: 480px) {
-    .header {
-        padding: 1rem;
-    }
-
-    .logo {
-        font-size: 1.5rem;
-    }
-
-    .container-left,
-    .container-top,
-    .container-bottom {
-        padding: 1rem;
-    }
-}
-/* Estilos para la leyenda */
-.chart-legend {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.chart-legend text {
+  .header {
+    padding: 1rem;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+  }
+  
+  .container-left,
+  .container-right {
+    padding: 1rem;
+  }
+  
+  /* Tooltip más pequeño en móviles */
+  .chart-tooltip {
+    min-width: 140px;
     font-size: 12px;
-    fill: #333;
-}
-
-.chart-legend rect {
-    stroke: #eee;
-    stroke-width: 1;
-}
-
-/* Tooltip mejorado */
-.chart-tooltip {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.97);
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 10px 15px;
-    pointer-events: none;
-    font-size: 13px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
-    backdrop-filter: blur(2px);
-    min-width: 160px;
-    z-index: 100;
-    transition: opacity 0.3s ease, transform 0.2s ease;
-}
-
-.tooltip-title {
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 6px;
-    padding-bottom: 4px;
-    border-bottom: 1px solid #eee;
-}
-
-.chart-tooltip div {
-    margin: 4px 0;
-    line-height: 1.4;
-}
-
-/* Puntos del gráfico */
-.chart-container .point {
-    transition: all 0.2s ease;
-    stroke: white;
-    stroke-width: 1;
-}
-
-.chart-container .point:hover {
-    stroke-width: 5;
+    padding: 8px 10px;
+  }
 }
