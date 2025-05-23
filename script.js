@@ -364,11 +364,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Series de datos CON ETIQUETAS CORRECTAS según lo solicitado
         const series = [
-            {name: "Fase R", values: processedCurrentData.map(d => ({hora: d.hora, value: d.faseR})), color: "#FF5733"},
-            {name: "Fase S", values: processedCurrentData.map(d => ({hora: d.hora, value: d.faseS})), color: "#33FF57"},
-            {name: "Fase T", values: processedCurrentData.map(d => ({hora: d.hora, value: d.faseT})), color: "#4061f7"},
-            {name: "Potencia Total", values: processedCurrentData.map(d => ({hora: d.hora, value: d.potenciaTotal})), color: "#364452", strokeWidth: 2}
+            {name: "Fase R", values: processedCurrentData.map(d => ({hora: d.hora, value: d.faseR})), color: "#4285F4"},
+            {name: "Fase S", values: processedCurrentData.map(d => ({hora: d.hora, value: d.faseS})), color: "#0F9D58"},
+            {name: "Fase T", values: processedCurrentData.map(d => ({hora: d.hora, value: d.faseT})), color: "#FF7043"},
+            {name: "Potencia Total", values: processedCurrentData.map(d => ({hora: d.hora, value: d.potenciaTotal})), color: "#FF5722", strokeWidth: 1.2}
         ];
+
+        // Gridlines horizontales
+svg.append("g")
+  .attr("class", "grid grid-horizontal")
+  .call(d3.axisLeft(y)
+    .tickSize(-width)
+    .tickFormat("")
+  );
+
+// Gridlines verticales (opcional, puede saturar visualmente)
+svg.append("g")
+  .attr("class", "grid grid-vertical")
+  .attr("transform", `translate(0,${height})`)
+  .call(d3.axisBottom(x)
+    .tickSize(-height)
+    .tickFormat("")
+  );
 
         // Dibujar líneas
         series.forEach(serie => {
@@ -381,8 +398,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .attr("d", line);
 });
 
+
         // Dibujar puntos (tamaño configurable aquí - 5px)
-        const pointSize = 2;  // Tamaño un poco mayor para mejor visibilidad
+        const pointSize = 1;  // Tamaño un poco mayor para mejor visibilidad
 series.forEach(serie => {
     svg.selectAll(`.point-${serie.name.replace(/\s+/g, '-')}`)
         .data(serie.values)

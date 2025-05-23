@@ -8,10 +8,10 @@
   --warning-color: #f39c12;
   
   /* Colores de las series (actualizados según JS) */
-  --fase-r-color: #FF5733;
-  --fase-s-color: #33FF57;
-  --fase-t-color: #4061f7;
-  --potencia-color: #364452;
+  --fase-r-color: #4285F4;  /* Azul Google - Vibrante pero profesional */
+  --fase-s-color: #0F9D58;  /* Verde Material - Fresco y energético */
+  --fase-t-color: #FF7043;  /* Naranja intenso - Muy energético */
+  --potencia-color: #FF5722;  /* Rojo anaranjado - Para destacar la potencia */
   
   /* Escala de grises */
   --light-color: #ecf0f1;
@@ -140,6 +140,10 @@ body {
 }
 
 /* Ejes del gráfico */
+.axis .domain {
+  display: none; /* Opcional: elimina la línea del eje principal */
+}
+
 .axis text {
   font-size: 12px;
   fill: #666;
@@ -154,6 +158,27 @@ body {
 
 .axis-y .tick text {
   font-size: 11px;
+}
+
+.grid line {
+  stroke:  #f0f0f0; /* Color gris suave */
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.grid .domain {
+  stroke: none; /* Elimina el borde del área de grid */
+}
+/* Gridlines horizontales */
+.grid-horizontal line {
+  stroke: #f0f0f0;
+  /*stroke-dasharray: 3,3; /* Opcional: líneas punteadas */
+}
+
+/* Gridlines verticales */
+.grid-vertical line {
+  stroke:#f0f0f0;
+    /*stroke-dasharray: 3,3; /* Opcional: líneas punteadas */
 }
 
 /* Líneas del gráfico */
@@ -180,7 +205,7 @@ body {
 
 .line-Potencia-Total {
   stroke: var(--potencia-color);
-  stroke-width: 2;
+  stroke-width: 1;
 }
 
 /* Puntos del gráfico */
