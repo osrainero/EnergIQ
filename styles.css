@@ -6,13 +6,13 @@
   --success-color: #2ecc71;
   --danger-color: #e74c3c;
   --warning-color: #f39c12;
-  
+
   /* Colores de las series (actualizados según JS) */
-  --fase-r-color: #4285F4;  /* Azul Google - Vibrante pero profesional */
-  --fase-s-color: #0F9D58;  /* Verde Material - Fresco y energético */
-  --fase-t-color: #FF7043;  /* Naranja intenso - Muy energético */
-  --potencia-color: #FF5722;  /* Rojo anaranjado - Para destacar la potencia */
-  
+  --fase-r-color: #4285f4;
+  --fase-s-color: #0f9d58;
+  --fase-t-color: #ff7043;
+  --potencia-color: #ff5722;
+
   /* Escala de grises */
   --light-color: #ecf0f1;
   --dark-color: #2c3e50;
@@ -21,10 +21,10 @@
   --background-light: #f8f9fa;
   --border-light: #eee;
   --border-color: #ddd;
-  
+
   /* Tipografía */
-  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  
+  --font-main: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
   /* Efectos */
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
@@ -161,7 +161,7 @@ body {
 }
 
 .grid line {
-  stroke:  #f0f0f0; /* Color gris suave */
+  stroke: #f0f0f0; /* Color gris suave */
   stroke-width: 1;
   shape-rendering: crispEdges;
 }
@@ -177,8 +177,8 @@ body {
 
 /* Gridlines verticales */
 .grid-vertical line {
-  stroke:#f0f0f0;
-    /*stroke-dasharray: 3,3; /* Opcional: líneas punteadas */
+  stroke: #f0f0f0;
+  /*stroke-dasharray: 3,3; /* Opcional: líneas punteadas */
 }
 
 /* Líneas del gráfico */
@@ -264,7 +264,7 @@ body {
   padding: 12px 15px;
   pointer-events: none;
   font-size: 13px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(2px);
   min-width: 180px;
   z-index: 100;
@@ -346,7 +346,7 @@ body {
   .content-wrapper {
     flex-direction: column;
   }
-  
+
   .container-left,
   .container-right {
     width: 100%;
@@ -357,7 +357,7 @@ body {
   .menu-toggle {
     display: block;
   }
-  
+
   .nav-menu {
     position: absolute;
     top: 100%;
@@ -368,29 +368,29 @@ body {
     overflow: hidden;
     transition: max-height 0.3s ease;
   }
-  
+
   .nav-menu.active {
     max-height: 500px;
     padding: 1rem 2rem;
   }
-  
+
   .menu-list {
     flex-direction: column;
   }
-  
+
   .menu-list li {
     margin: 0.5rem 0;
   }
-  
+
   .main-container {
     padding: 1rem;
   }
-  
+
   /* Ajustes para gráficos en móviles */
   .chart-container {
     min-height: 300px;
   }
-  
+
   .point {
     r: 3;
   }
@@ -400,16 +400,16 @@ body {
   .header {
     padding: 1rem;
   }
-  
+
   .logo {
     font-size: 1.5rem;
   }
-  
+
   .container-left,
   .container-right {
     padding: 1rem;
   }
-  
+
   /* Tooltip más pequeño en móviles */
   .chart-tooltip {
     min-width: 140px;
