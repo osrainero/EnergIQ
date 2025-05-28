@@ -635,4 +635,3 @@ window.addEventListener('beforeunload', function() {
         clearInterval(autoReloadInterval);
     }
 });
-

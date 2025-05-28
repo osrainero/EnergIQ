@@ -1,0 +1,181 @@
+:root {
+    --primary-color: #0077b6;       /* Color del logo */
+    --primary-dark: #023e8a;        /* 20% más oscuro para hover */
+    --primary-light: #caf0f8;       /* 90% más claro para bordes */
+    --error-color: #ef476f;         /* Color para errores */
+    --text-color: #2b2d42;          /* Color de texto principal */
+    --bg-color: #ffffff;            /* Fondo blanco del body */
+    --container-color: #f2f2f2;     /* Fondo del contenedor (color logo) */
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: var(--light-color);  /* Usamos el color de fondo del logo */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 500px;
+    background: var(--container-color); /* #f2f2f2 como solicitado */
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 35px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.logo {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 15px;
+    display: block;
+    object-fit: contain;
+    background: var(--container-color); /* Coherencia con el contenedor */
+    padding: 15px; /* Espacio alrededor del logo */
+    border-radius: 8px;
+}
+
+h1 {
+    color: var(--text-color);
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+.form-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid var(--primary-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: var(--bg-color);
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.1);
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+button {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 119, 182, 0.1);
+}
+
+.btn-secondary {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-light);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+
+.forgot-password {
+    display: block;
+    margin-top: 20px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 20px 15px;
+    }
+
+    .logo {
+        width: 180px;
+        height: 180px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        width: 150px;
+        height: 150px;
+    }
+
+    input, button {
+        padding: 12px;
+    }
+}

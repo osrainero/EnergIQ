@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnergIQ - Soluciones Energéticas</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <h1 class="logo">EnergIQ</h1>
+        <button class="menu-toggle" id="menuToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <nav class="nav-menu" id="navMenu">
+        <ul class="menu-list">
+          <li><a href="#">Inicio</a></li>
+          <li><a href="#">Servicios</a></li>
+          <li><a href="#">Gráficos</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main-container">
+      <div class="content-wrapper">
+        <section class="container-left" id="containerA">
+          <h2>Datos Principales</h2>
+          <div class="auto-reload-container">
+            <span class="auto-reload-label">Recarga automática:</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="autoReloadToggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="date-selector-container">
+            <label for="dateSelector">Seleccione una fecha:</label>
+            <select id="dateSelector" class="date-selector">
+              <!-- Se completa automatico -->
+            </select>
+          </div>
+
+          <div class="summary-info">
+            <!-- Aquí puedes agregar información resumida que se actualizará con la fecha -->
+          </div>
+        </section>
+
+        <section class="container-right">
+          <div class="container-top" id="containerB">
+            <h2>Análisis Energético</h2>
+            <div class="chart-container" id="lineChartContainer"></div>
+          </div>
+
+          <div class="container-bottom" id="containerC">
+            <h2>Eficiencia Comparativa</h2>
+            <div class="chart-container">
+              <!-- Espacio reservado para gráfico de Pareto 2 -->
+              <canvas id="paretoChart2" class="pareto-chart"></canvas>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
