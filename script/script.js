@@ -4,13 +4,6 @@ const AUTO_RELOAD_INTERVAL = 5 * 60 * 1000; // 5 minutos en milisegundos
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM cargado - Iniciando aplicación EnergIQ");
 
-  // 1. Configuración inicial
-  const menuToggle = document.getElementById("menuToggle");
-  const navMenu = document.getElementById("navMenu");
-  menuToggle.addEventListener("click", function () {
-    navMenu.classList.toggle("active");
-  });
-
   // Variable global para los datos procesados
   let processedData = null;
   let currentDisplayDate = null;
@@ -27,6 +20,25 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("Fecha seleccionada:", this.value);
       currentDisplayDate = this.value;
       updateDisplay(this.value, processedData);
+    });
+  }
+
+  // 2. Configurar event listener para el auto-reload
+  const autoReloadToggle = document.getElementById("autoReloadToggle");
+  if (autoReloadToggle) {
+    autoReloadToggle.addEventListener('change', function() {
+      if(this.checked) {
+        // Activar recarga automática
+        autoReloadInterval = setInterval(loadAndProcessData, AUTO_RELOAD_INTERVAL);
+        console.log("Recarga automática activada");
+      } else {
+        // Desactivar recarga
+        if(autoReloadInterval) {
+          clearInterval(autoReloadInterval);
+          autoReloadInterval = null;
+        }
+        console.log("Recarga automática desactivada");
+      }
     });
   }
 

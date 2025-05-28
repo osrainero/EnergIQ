@@ -5,20 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EnergIQ - Soluciones Energéticas</title>
     <link rel="stylesheet" href="styles/styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <script src="https://d3js.org/d3.v7.min.js"></script>
   </head>
   <body>
-    <!-- Encabezado de la empresa -->
-    <div class="company-header">
-      <h1>EnergIQ</h1>
-      <p>Optimizing energy, Empowering the future.</p>
-    </div>
-
-    <!-- Encabezado del cliente -->
-    <div class="client-header">
-      <h2>Nova GNC</h2>
-    </div>
+    <header class="header">
+      <div class="header-content">
+        <h1 class="logo">EnergIQ</h1>
+        <button class="menu-toggle" id="menuToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <nav class="nav-menu" id="navMenu">
+        <ul class="menu-list">
+          <li><a href="#">Inicio</a></li>
+          <li><a href="#">Servicios</a></li>
+          <li><a href="#">Gráficos</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </nav>
+    </header>
 
     <main class="main-container">
       <div class="content-wrapper">
@@ -38,7 +47,6 @@
               <!-- Se completa automatico -->
             </select>
           </div>
-          <!-- Menú y contenido principal -->
 
           <div class="summary-info">
             <!-- Aquí puedes agregar información resumida que se actualizará con la fecha -->
