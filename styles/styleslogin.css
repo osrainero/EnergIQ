@@ -31,7 +31,7 @@ body {
     background: var(--container-color); /* #f2f2f2 como solicitado */
     border-radius: 16px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    padding: 35px;
+    padding: 10px 30px 15px 30px;
     text-align: center;
     animation: fadeIn 0.5s ease;
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -49,8 +49,8 @@ body {
 }
 
 .logo {
-    width: 220px;
-    height: 220px;
+    width: 230px;
+    height: 230px;
     margin: 0 auto 15px;
     display: block;
     object-fit: contain;
