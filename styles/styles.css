@@ -86,14 +86,44 @@ button {
 /* Tooltip (mejorado) */
 .chart-tooltip {
   position: absolute;
-  background: rgba(255, 255, 255, 0.97);
-  border: 1px solid var(--border-color);
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ddd;
   border-radius: 6px;
-  padding: 10px 12px;
   pointer-events: none;
   font-size: 13px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px);
+  transform: translate(-50%, -110%) scale(0.9);
+  transform-origin: center bottom;
+  min-width: 180px;
   z-index: 100;
+}
+.tooltip-header {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: var(--primary-dark);
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+.tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+}
+
+/* Fondo del gráfico de Power Factor */
+.pf-zone-red {
+  fill: rgba(239, 71, 111, 0.08);
+}
+
+.pf-zone-yellow {
+  fill: rgba(255, 209, 102, 0.08);
+}
+
+.pf-zone-green {
+  fill: rgba(15, 157, 88, 0.08);
 }
 
 /* Estilos específicos dashboard */
