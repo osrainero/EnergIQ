@@ -291,20 +291,7 @@ document.addEventListener("DOMContentLoaded", function () {
           processedData.uniqueDates[0]
         } a ${processedData.uniqueDates[processedData.uniqueDates.length - 1]}</p>
         <p><strong>Actualizado con valores hasta las:</strong> ${lastTime}</p>
-        <div class="data-sample">
-          <h4>Primeros datos:</h4>
-          <pre>${JSON.stringify(
-            {
-              hora: processedData.allData[0].hora,
-              potenciaTotal: processedData.allData[0].potenciaTotal,
-              faseR: processedData.allData[0].faseR,
-              faseS: processedData.allData[0].faseS,
-              faseT: processedData.allData[0].faseT,
-            },
-            null,
-            2
-          )}</pre>
-        </div>
+        
       `);
   }
 
