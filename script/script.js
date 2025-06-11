@@ -87,12 +87,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function showError(container, message) {
-    d3.select(container)
+    d3
+      .select(container)
       .selectAll(".error-message")
       .data([message])
       .join("div")
-      .attr("class", "error-message")
-      .html(`
+      .attr("class", "error-message").html(`
         <h3><i class="fas fa-exclamation-triangle"></i> Error</h3>
         <p>${message}</p>
       `);
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Iniciando carga de datos...");
 
     const timestamp = new Date().getTime();
-    d3.csv(`data.csv?t=${timestamp}`)
+    d3.dsv(";", `data.csv?t=${timestamp}`) // d3.csv por d3.dsv con delimitador Qliau!
       .then(function (rawData) {
         console.log("Datos CSV cargados. Filas:", rawData.length);
 
@@ -144,12 +144,12 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("Columnas disponibles:", Object.keys(rawData[0]));
 
       const columnMap = {
-        fecha: "fecha_str",
-        hora: "hora_str",
-        potenciaTotal: "30.0",
-        faseR: "27.0",
-        faseS: "28.0",
-        faseT: "29.0",
+        fecha: "timestamp1", // Cambiado de "fecha_str"
+        hora: "hora", // Cambiado de "hora_str"
+        potenciaTotal: "30",
+        faseR: "27",
+        faseS: "28",
+        faseT: "29",
       };
 
       const missingColumns = Object.values(columnMap).filter(
@@ -279,12 +279,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const lastDayData = processedData.dataByDate[lastDate];
     const lastTime = lastDayData[lastDayData.length - 1].hora;
 
-    d3.select("#containerA")
+    d3
+      .select("#containerA")
       .selectAll(".diagnostic-info")
       .data([{ rawData, processedData }])
       .join("div")
-      .attr("class", "diagnostic-info")
-      .html(`
+      .attr("class", "diagnostic-info").html(`
         <h3>Información de Carga</h3>
         <p><strong>Filas cargadas:</strong> ${rawData.length}</p>
         <p><strong>Rango de fechas:</strong> ${
@@ -299,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const groupedData = {};
 
     data.forEach((item) => {
-      const [hours, minutes] = item.hora.split(":");
+      const [hours, minutes, seconds] = item.hora.split(":"); // Ahora incluye segundos qliau!!
       const hour = parseInt(hours);
       const minute = Math.floor(parseInt(minutes) / 5) * 5;
       const intervalKey = `${hour}:${minute.toString().padStart(2, "0")}`;
@@ -333,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const groupedData = {};
 
     data.forEach((item) => {
-      const [hours, minutes] = item.hora.split(":");
+      const [hours, minutes, seconds] = item.hora.split(":"); // Aca tambien agregamos los segundos... al pedaso!
       const hour = parseInt(hours);
       const minute = Math.floor(parseInt(minutes) / 5) * 5;
       const intervalKey = `${hour}:${minute.toString().padStart(2, "0")}`;
@@ -350,9 +350,9 @@ document.addEventListener("DOMContentLoaded", function () {
         };
       }
 
-      const pfR = parseFloat(item.raw["63.0"]) || 0;
-      const pfS = parseFloat(item.raw["64.0"]) || 0;
-      const pfT = parseFloat(item.raw["65.0"]) || 0;
+      const pfR = parseFloat(item.raw["63"]) || 0;
+      const pfS = parseFloat(item.raw["64"]) || 0;
+      const pfT = parseFloat(item.raw["65"]) || 0;
 
       groupedData[intervalKey].pfR.push(pfR);
       groupedData[intervalKey].pfS.push(pfS);
@@ -556,10 +556,14 @@ document.addEventListener("DOMContentLoaded", function () {
           const tooltipY = yPos + margin.top + 40;
 
           const content = `
-            <div class="tooltip-header"><strong>${selectedDate} ${d.hora}</strong></div>
-            <div class="tooltip-row"><span>${serie.name}:</span> <span>${d.raw.toFixed(3)}</span></div>
+            <div class="tooltip-header"><strong>${selectedDate} ${
+            d.hora
+          }</strong></div>
+            <div class="tooltip-row"><span>${
+              serie.name
+            }:</span> <span>${d.raw.toFixed(3)}</span></div>
           `;
-          
+
           showTooltip(tooltip, content, tooltipX, tooltipY);
         })
         .on("mouseout", function () {
@@ -817,12 +821,24 @@ document.addEventListener("DOMContentLoaded", function () {
           const tooltipY = yPos + margin.top + 40;
 
           const content = `
-            <div class="tooltip-header"><strong>${selectedDate} ${d.hora}</strong></div>
-            <div class="tooltip-row"><span>Fase R:</span> <span>${horaData.faseR.toFixed(2)} kW</span></div>
-            <div class="tooltip-row"><span>Fase S:</span> <span>${horaData.faseS.toFixed(2)} kW</span></div>
-            <div class="tooltip-row"><span>Fase T:</span> <span>${horaData.faseT.toFixed(2)} kW</span></div>
-            <div class="tooltip-row"><span>Potencia Total:</span> <span>${horaData.potenciaTotal.toFixed(2)} kW</span></div>
-            <div class="tooltip-row"><span>Pot. T. Semana Ant:</span> <span>${prevWeekValue.toFixed(2)} kW</span></div>
+            <div class="tooltip-header"><strong>${selectedDate} ${
+            d.hora
+          }</strong></div>
+            <div class="tooltip-row"><span>Fase R:</span> <span>${horaData.faseR.toFixed(
+              2
+            )} kW</span></div>
+            <div class="tooltip-row"><span>Fase S:</span> <span>${horaData.faseS.toFixed(
+              2
+            )} kW</span></div>
+            <div class="tooltip-row"><span>Fase T:</span> <span>${horaData.faseT.toFixed(
+              2
+            )} kW</span></div>
+            <div class="tooltip-row"><span>Potencia Total:</span> <span>${horaData.potenciaTotal.toFixed(
+              2
+            )} kW</span></div>
+            <div class="tooltip-row"><span>Pot. T. Semana Ant:</span> <span>${prevWeekValue.toFixed(
+              2
+            )} kW</span></div>
           `;
 
           showTooltip(tooltip, content, tooltipX, tooltipY);
