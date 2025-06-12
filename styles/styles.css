@@ -1,7 +1,7 @@
 :root {
   --primary-color: #0077b6;
   --primary-dark: #023e8a;
-  --primary-light: #caf0f8;
+  --primary-light: #e2e8f0;
   --error-color: #ef476f;
   --text-color: #2b2d42;
   --bg-color: #ffffff;
@@ -187,7 +187,110 @@ button {
   margin-top: 1rem;
 }
 
-.container-left,
+.container-left {
+  background-color: transparent;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.auto-reload-container,
+.date-selector-container,
+.summary-info,
+.diagnostic-info,
+.loading-message,
+.error-message {
+  background-color: var(--bg-color);
+  border-radius: 12px; /* Aumentamos el redondeo */
+  padding: 1.5rem;
+  border: 1px solid var(--primary-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: var(--transition);
+}
+.auto-reload-container:hover,
+.date-selector-container:hover,
+.summary-info:hover,
+.diagnostic-info:hover {
+  box-shadow: 0 4px 16px rgba(0, 23, 36, 0.15);
+  transform: translateY(-2px);
+}
+
+.auto-reload-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: #f8fafc; /* Color más claro */
+}
+
+.date-selector-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff; 
+}
+
+.summary-info {
+  flex-grow: 1;
+  background-color: #fff; /* Azul claro */
+}
+
+.diagnostic-info {
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+}
+.diagnostic-info h3 {
+  color: var(--primary-dark);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.diagnostic-info p {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.diagnostic-info .data-sample {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  border: 1px dashed #cbd5e0;
+}
+.loading-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #fff8f0; /* Amarillo muy claro */
+  border: 1px solid #fed7aa;
+}
+
+.loading-message i {
+  color: #f97316; /* Naranja */
+}
+.error-message {
+  background-color: #fff5f5; /* Rojo muy claro */
+  border: 1px solid #fecaca;
+}
+
+.error-message h3 {
+  color: var(--error-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+
+
+
+
+
 .container-right {
   background-color: var(--bg-color);
   border-radius: 8px;
@@ -281,6 +384,9 @@ button {
   font-size: 0.9rem;
 }
 
+.auto-reload-container .toggle-switch {
+  margin-left: auto;
+}
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -335,6 +441,15 @@ input:checked + .toggle-slider:before {
   .container-right {
     width: 100%;
   }
+  .auto-reload-container,
+  .date-selector-container,
+  .summary-info,
+  .diagnostic-info,
+  .loading-message,
+  .error-message {
+    padding: 1.25rem;
+    border-radius: 10px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -354,6 +469,16 @@ input:checked + .toggle-slider:before {
   .main-container {
     padding: 1rem;
   }
+  .auto-reload-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .auto-reload-container .toggle-switch {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
 }
 
 @media (max-width: 480px) {

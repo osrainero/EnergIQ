@@ -448,7 +448,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .style("text-anchor", "end")
       .attr("dx", "-.8em")
       .attr("dy", ".15em")
-      .attr("transform", "rotate(-45)");
+      .attr("transform", "rotate(-30)");
 
     // Fondos zonificados
     chartGroup
