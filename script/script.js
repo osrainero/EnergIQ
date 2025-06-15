@@ -469,6 +469,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const line = d3
       .line()
       .x((d) => getXPosition(d.hora))
+      .curve(d3.curveCatmullRom.alpha(0.4))
       .y((d) => y(d.value));
 
     const series = [
@@ -525,7 +526,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .datum(serie.values)
         .attr("fill", "none")
         .attr("stroke", serie.color)
-        .attr("stroke-width", serie.strokeWidth || 1)
+        .attr("stroke-width", 2)
         .attr("class", `line-${serie.name.replace(/\s+/g, "-")}`)
         .attr("d", line) // Primero establecer el path
         .attr("stroke-dasharray", function () {
@@ -536,8 +537,8 @@ document.addEventListener("DOMContentLoaded", function () {
           return this.getTotalLength();
         })
         .transition()
-        .delay(i * 200) // Mayor delay para mejor efecto secuencial
-        .duration(TRANSITIONS.lines)
+        .delay(i * 300) // Mayor delay para mejor efecto secuencial
+        .duration(TRANSITIONS.lines * 5)
         .attr("stroke-dashoffset", 0);
     });
     //
@@ -742,6 +743,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const line = d3
       .line()
       .x((d) => getXPosition(d.hora))
+      .curve(d3.curveCatmullRom.alpha(0.4))
       .y((d) => y(d.value));
 
     // Series con colores sólidos
@@ -793,8 +795,8 @@ document.addEventListener("DOMContentLoaded", function () {
           return this.getTotalLength();
         })
         .transition()
-        .delay(i * 200) // Mayor delay para mejor efecto secuencial
-        .duration(TRANSITIONS.lines * 1.5) // Duración más larga para mejor visibilidad
+        .delay(i * 300) // Mayor delay para mejor efecto secuencial
+        .duration(TRANSITIONS.lines * 5) // Duración más larga para mejor visibilidad
         .attr("stroke-dashoffset", 0)
         .on("end", function () {
           d3.select(this).attr("stroke-dasharray", null); // Eliminar después de la animación
