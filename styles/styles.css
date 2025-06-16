@@ -432,6 +432,66 @@ input:checked + .toggle-slider:before {
   transform: translateX(26px);
 }
 
+/* Estilos para el calendario */
+.calendar-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+.calendar-svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.month-group {
+  margin-right: 0;
+}
+
+.day-cell {
+  stroke: #fff;
+  stroke-width: 0.5px;
+  shape-rendering: crispEdges;
+}
+
+.day-cell:hover {
+  stroke: #333;
+  stroke-width: 1px;
+}
+
+.month-label {
+  font-size: 11px;
+  font-weight: bold;
+  text-anchor: middle;
+  fill: #333;
+}
+
+.weekday-label {
+  font-size: 10px;
+  text-anchor: end;
+  fill: #666;
+}
+.year-row {
+  margin-bottom: 20px;
+}
+
+
+.calendar-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 10;
+  max-width: 150px;
+  word-wrap: break-word;
+}
+
+/* Responsive */
+
+
+
 /* Responsive */
 @media (max-width: 992px) {
   .content-wrapper {
@@ -449,6 +509,15 @@ input:checked + .toggle-slider:before {
   .error-message {
     padding: 1.25rem;
     border-radius: 10px;
+  }
+}
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .month-label {
+    font-size: 10px;
+  }
+  .weekday-label {
+    font-size: 9px;
   }
 }
 

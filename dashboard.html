@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EnergIQ - Soluciones Energéticas</title>
     <link rel="stylesheet" href="styles/styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <script src="https://d3js.org/d3.v7.min.js"></script>
   </head>
   <body>
@@ -23,7 +26,7 @@
     <main class="main-container">
       <div class="content-wrapper">
         <section class="container-left" id="containerA">
-           <!-- <h2>Datos Principales</h2> -->
+          <!-- <h2>Datos Principales</h2> -->
           <div class="auto-reload-container">
             <span class="auto-reload-label">Recarga automática:</span>
             <label class="toggle-switch">
@@ -38,10 +41,12 @@
               <!-- Se completa automatico -->
             </select>
           </div>
-          <!-- Menú y contenido principal -->
-
           <div class="summary-info">
-            <!-- Aquí puedes agregar información resumida que se actualizará con la fecha -->
+            <div class="calendar-header">
+              <h3>Registros Diarios</h3>
+              <div class="calendar-legend"></div>
+            </div>
+            <div id="calendarChart" class="calendar-container"></div>
           </div>
         </section>
 
@@ -53,15 +58,28 @@
 
           <div class="container-bottom" id="containerC">
             <h2>Eficiencia Comparativa</h2>
-            <div class="chart-container">
-              <!-- Espacio reservado para gráfico de Pareto 2 -->
-              <canvas id="paretoChart2" class="pareto-chart"></canvas>
-            </div>
+            <div class="chart-container" id="paretoChart2"></div>
           </div>
         </section>
       </div>
     </main>
 
-    <script src="script/script.js"></script>
+    <script type="module">
+      import "./script/main.js";
+
+      // Inicialización después de carga completa
+      document.addEventListener("DOMContentLoaded", function () {
+        initCalendar();
+
+        // Forzar una actualización inicial si es necesario
+        setTimeout(() => {
+          if (window.updateDisplay && processedData) {
+            const lastDate =
+              processedData.uniqueDates[processedData.uniqueDates.length - 1];
+            window.updateDisplay(lastDate, processedData);
+          }
+        }, 500);
+      });
+    </script>
   </body>
 </html>

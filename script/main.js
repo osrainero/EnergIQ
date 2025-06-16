@@ -132,6 +132,8 @@ document.addEventListener("DOMContentLoaded", function () {
         currentDisplayDate = lastDate;
         updateDisplay(lastDate, processedData);
 
+        document.dispatchEvent(new Event("dataProcessed"));
+
         d3.select("#containerA .loading-message").remove();
       })
       .catch(function (error) {
@@ -877,6 +879,150 @@ document.addEventListener("DOMContentLoaded", function () {
         .style("font-size", "12px")
         .text(serie.name);
     });
+  }
+
+  // ========== CALENDAR HEATMAP ==========
+function initCalendar() {
+    if (!processedData) {
+        setTimeout(initCalendar, 500);
+        return;
+    }
+
+    console.log("Inicializando calendario anual...");
+    const container = d3.select("#calendarChart");
+    container.html("");
+
+    // Contar registros por día
+    const countsByDate = {};
+    processedData.allData.forEach(item => {
+        countsByDate[item.fecha] = (countsByDate[item.fecha] || 0) + 1;
+    });
+
+    // Configuración de dimensiones fijas
+    const cellSize = 15;
+    const cellPadding = 1;
+    const monthPadding = 0;
+    const weekdayWidth = 20;
+    const monthTitleHeight = 20;
+    const rowSpacing = 30;
+
+    // Escala de colores mejorada (7 tonos de azul)
+    const colorScale = d3.scaleQuantize()
+        .domain([0, d3.max(Object.values(countsByDate))])
+        .range(["#e6f2ff", "#b3d6ff", "#80bfff", "#4da8ff", "#1a91ff", "#0077e6", "#005cb3"]);
+
+    // Organizar meses en 3 filas (4-4-4)
+    const currentYear = new Date().getFullYear();
+    const allMonths = Array.from({length: 12}, (_, i) => new Date(currentYear, i, 1));
+    const monthRows = [
+        allMonths.slice(0, 4),  // Primer cuatrimestre
+        allMonths.slice(4, 8),  // Segundo cuatrimestre
+        allMonths.slice(8, 12)  // Tercer cuatrimestre
+    ];
+
+    // Calcular dimensiones totales
+    const monthsPerRow = 4;
+    const monthWidth = (cellSize + cellPadding) * 7;
+    const totalWidth = weekdayWidth + (monthWidth * monthsPerRow) + (monthPadding * (monthsPerRow - 1));
+    const rowHeight = (cellSize + cellPadding) * 6 + monthTitleHeight;
+    const totalHeight = (rowHeight * 3) + (rowSpacing * 2);
+
+    // Crear SVG con dimensiones fijas
+    const svg = container.append("svg")
+        .attr("class", "calendar-svg")
+        .attr("width", "100%")
+        .attr("height", "auto")
+        .attr("viewBox", `0 0 ${totalWidth} ${totalHeight}`)
+        .attr("preserveAspectRatio", "xMinYMin meet");
+
+    // Etiquetas de días de la semana (verticales)
+    const weekdays = ["L", "M", "X", "J", "V", "S", "D"];
+    weekdays.forEach((day, i) => {
+        svg.append("text")
+            .attr("class", "weekday-label")
+            .attr("x", weekdayWidth - 5)
+            .attr("y", monthTitleHeight + (i * cellSize) + (cellSize / 2) + 5)
+            .text(day);
+    });
+
+    // Crear tooltip
+    const tooltip = createTooltip(container);
+
+    // Dibujar cada fila de meses
+    monthRows.forEach((months, rowIndex) => {
+        const rowY = (rowHeight + rowSpacing) * rowIndex;
+
+        months.forEach((month, monthIndex) => {
+            const monthX = weekdayWidth + (monthWidth * monthIndex);
+            
+            // Grupo para el mes
+            const monthGroup = svg.append("g")
+                .attr("class", "month-group")
+                .attr("transform", `translate(${monthX}, ${rowY})`);
+
+            // Título del mes
+            monthGroup.append("text")
+                .attr("class", "month-label")
+                .attr("x", monthWidth / 2)
+                .attr("y", 15)
+                .text(month.toLocaleDateString("es", { month: "long" }));
+
+            // Calcular días del mes
+            const firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+            const lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+            const startWeek = d3.timeWeek.floor(firstDay);
+            const endWeek = d3.timeWeek.ceil(lastDay);
+            const weeks = d3.timeWeek.range(startWeek, endWeek);
+
+            // Dibujar celdas del calendario
+            weeks.forEach(week => {
+                d3.timeDay.range(week, d3.timeDay.offset(week, 7)).forEach(day => {
+                    if (day.getMonth() === month.getMonth()) {
+                        const dayKey = `${day.getDate().toString().padStart(2, '0')}/${(day.getMonth()+1).toString().padStart(2, '0')}/${day.getFullYear()}`;
+                        const count = countsByDate[dayKey] || 0;
+                        const isDataDay = count > 0;
+                        
+                        const weekNum = d3.timeWeek.count(d3.timeYear(week), week);
+                        const x = (weekNum - d3.timeWeek.count(d3.timeYear(firstDay), firstDay)) * (cellSize + cellPadding);
+                        const y = monthTitleHeight + (day.getDay() * (cellSize + cellPadding));
+
+                        monthGroup.append("rect")
+                            .attr("class", "day-cell")
+                            .attr("width", cellSize)
+                            .attr("height", cellSize)
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("fill", isDataDay ? colorScale(count) : "#f0f0f0")
+                            .attr("rx", 2)
+                            .on("mouseover", function(event) {
+                                if (isDataDay) {
+                                    d3.select(this).attr("stroke", "#333").attr("stroke-width", 1);
+                                    showTooltip(
+                                        tooltip, 
+                                        `<strong>${dayKey}</strong><br>Registros: ${count}`, 
+                                        event.pageX -10, 
+                                        event.pageY -340
+                                    );
+                                }
+                            })
+                            .on("mouseout", function() {
+                                d3.select(this).attr("stroke", "#fff").attr("stroke-width", 0.5);
+                                hideTooltip(tooltip);
+                            });
+                    }
+                });
+            });
+        });
+    });
+}
+
+
+
+  // Llamar a initCalendar cuando los datos estén listos
+  if (processedData) {
+    initCalendar();
+  } else {
+    document.addEventListener("dataProcessed", initCalendar);
   }
 });
 
