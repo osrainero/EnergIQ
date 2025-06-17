@@ -167,6 +167,7 @@ button {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
+.calendar-header,
 .client-header h2 {
   margin: 0;
   font-size: 1.5rem;
@@ -244,6 +245,7 @@ button {
   background-color: #fff;
   border: 1px solid #e2e8f0;
 }
+.calendar-header,
 .diagnostic-info h3 {
   color: var(--primary-dark);
   margin-bottom: 1rem;
@@ -532,6 +534,7 @@ input:checked + .toggle-slider:before {
   .company-header p {
     font-size: 1rem;
   }
+  .calendar-header,
   .client-header h2 {
     font-size: 1.3rem;
   }
