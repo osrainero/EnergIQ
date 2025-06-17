@@ -64,22 +64,9 @@
       </div>
     </main>
 
-    <script type="module">
-      import "./script/main.js";
-
-      // Inicialización después de carga completa
-      document.addEventListener("DOMContentLoaded", function () {
-        initCalendar();
-
-        // Forzar una actualización inicial si es necesario
-        setTimeout(() => {
-          if (window.updateDisplay && processedData) {
-            const lastDate =
-              processedData.uniqueDates[processedData.uniqueDates.length - 1];
-            window.updateDisplay(lastDate, processedData);
-          }
-        }, 500);
-      });
-    </script>
+<script type="module">
+  import "./script/main.js";
+  // Elimina todo el contenido del DOMContentLoaded
+</script>
   </body>
 </html>

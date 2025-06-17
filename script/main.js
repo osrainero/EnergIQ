@@ -900,7 +900,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Configuración de dimensiones fijas
     const cellSize = 16;
-    const cellPadding = 1;
+    const cellPadding = 0;
     const monthPadding = 0;
     const weekdayWidth = 20;
     const monthTitleHeight = 20;
@@ -935,10 +935,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Calcular dimensiones totales
     const monthsPerRow = 4;
     const monthWidth = (cellSize + cellPadding) * 7;
-    const totalWidth =
-      weekdayWidth +
-      monthWidth * monthsPerRow +
-      monthPadding * (monthsPerRow - 1);
+    const totalWidth = weekdayWidth + monthWidth * monthsPerRow;
     const rowHeight = (cellSize + cellPadding) * 6 + monthTitleHeight;
     const totalHeight = rowHeight * 3 + rowSpacing * 2;
 
@@ -947,7 +944,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .append("svg")
       .attr("class", "calendar-svg")
       .attr("width", "100%")
-      .attr("height", "auto")
+      .attr("height", totalHeight)
       .attr("viewBox", `0 0 ${totalWidth} ${totalHeight}`)
       .attr("preserveAspectRatio", "xMinYMin meet");
 
@@ -970,13 +967,14 @@ document.addEventListener("DOMContentLoaded", function () {
       const rowY = (rowHeight + rowSpacing) * rowIndex;
 
       months.forEach((month, monthIndex) => {
-        const monthX = weekdayWidth + monthWidth * monthIndex;
+        const monthX = weekdayWidth + (monthWidth * monthIndex);
 
         // Grupo para el mes
         const monthGroup = svg
           .append("g")
           .attr("class", "month-group")
           .attr("transform", `translate(${monthX}, ${rowY})`);
+          
 
         // Título del mes
         monthGroup
