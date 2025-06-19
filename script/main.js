@@ -911,13 +911,11 @@ document.addEventListener("DOMContentLoaded", function () {
       .scaleQuantize()
       .domain([0, d3.max(Object.values(countsByDate))])
       .range([
-        "#e6f2ff",
-        "#b3d6ff",
-        "#80bfff",
-        "#4da8ff",
-        "#1a91ff",
-        "#0077e6",
-        "#005cb3",
+        "#d0f0c0",
+        "#a6dba0",
+        "#5aae61",
+        "#1b7837",
+        "#00441b",
       ]);
 
     // Organizar meses en 3 filas (4-4-4)

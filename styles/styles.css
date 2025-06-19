@@ -4,8 +4,8 @@
   --primary-light: #e2e8f0;
   --error-color: #ef476f;
   --text-color: #2b2d42;
-  --bg-color: #ffffff;
-  --bg-body: #f2f2f2;
+  --bg-color: #F8FAFC;
+  --bg-body: #DCE6EF;
   --container-color: #f2f2f2;
   --transition: all 0.3s ease;
   --fase-r-color: #4285f4;
@@ -233,16 +233,16 @@ button {
 .date-selector-container {
   display: flex;
   flex-direction: column;
-  background-color: #fff; 
+  background-color: #F8FAFC; 
 }
 
 .summary-info {
   flex-grow: 1;
-  background-color: #fff; /* Azul claro */
+  background-color: #F8FAFC; /* Azul claro */
 }
 
 .diagnostic-info {
-  background-color: #fff;
+  background-color: #F8FAFC;
   border: 1px solid #e2e8f0;
 }
 .calendar-header,
@@ -457,7 +457,7 @@ input:checked + .toggle-slider:before {
 }
 
 .day-cell:hover {
-  stroke: #333;
+  stroke: #666;
   stroke-width: 1px;
 }
 
